@@ -48,32 +48,18 @@
   }
 }
 
+*:focus {
+  outline: 3px solid #F97316 !important;
+  outline-offset: 2px !important;
+}
+
+*:focus:not(:focus-visible) {
+  outline: none !important;
+}
+
 *:focus-visible {
-  outline: 3px solid #f97316;
-  outline-offset: 2px;
-}
-
-button:focus-visible,
-a:focus-visible,
-input:focus-visible,
-select:focus-visible,
-textarea:focus-visible,
-[role="button"]:focus-visible {
-  outline: 3px solid #f97316;
-  outline-offset: 2px;
-}
-
-input:focus,
-textarea:focus,
-select:focus {
-  outline: none;
-}
-
-input:focus-visible,
-textarea:focus-visible,
-select:focus-visible {
-  outline: 3px solid #f97316;
-  outline-offset: 2px;
+  outline: 3px solid #F97316 !important;
+  outline-offset: 2px !important;
 }
 
 @media (prefers-reduced-motion: reduce) {

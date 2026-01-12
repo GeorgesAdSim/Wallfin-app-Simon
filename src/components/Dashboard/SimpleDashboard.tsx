@@ -64,18 +64,18 @@ export function SimpleDashboard() {
         </h1>
 
         <div className="bg-slate-800 rounded-xl p-6 mb-6 text-white">
-          <div className="text-sm text-slate-400 mb-2">Total restant à rembourser</div>
+          <div className="mb-2" style={{ fontSize: '14px', color: '#94A3B8' }}>Total restant a rembourser</div>
           <div className="text-4xl font-bold mb-4">{formatAmount(totalRestantDu)}</div>
 
           <div className="h-px bg-slate-700 my-4" />
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <div className="text-sm text-slate-400 mb-1">Mensualités totales</div>
+              <div className="mb-1" style={{ fontSize: '14px', color: '#94A3B8' }}>Mensualites totales</div>
               <div className="text-xl font-semibold">{formatAmount(totalMensualites)}</div>
             </div>
             <div>
-              <div className="text-sm text-slate-400 mb-1">Déjà remboursé</div>
+              <div className="mb-1" style={{ fontSize: '14px', color: '#94A3B8' }}>Deja rembourse</div>
               <div className="text-xl font-semibold text-green-400">{formatAmount(totalDejaRembourse)}</div>
             </div>
           </div>
@@ -102,18 +102,19 @@ export function SimpleDashboard() {
             )}
           </div>
 
-          <div className="space-y-3">
+          <div className="space-y-4">
             {credits.map((credit) => (
               <button
                 key={credit.id}
                 onClick={() => navigateTo('credit-detail', credit.id)}
-                className="w-full bg-slate-800 hover:bg-slate-700 rounded-xl p-4 flex items-center justify-between transition-colors text-left"
+                className="w-full bg-slate-800 hover:bg-slate-700 rounded-xl flex items-center justify-between transition-colors text-left"
+                style={{ padding: '20px' }}
               >
                 <div className="flex items-center gap-4">
-                  <div className="text-3xl">{creditTypeIcons[credit.type] || '💰'}</div>
+                  <div style={{ fontSize: '32px' }}>{creditTypeIcons[credit.type] || '💰'}</div>
                   <div>
-                    <div className="text-white font-semibold mb-1">{credit.type}</div>
-                    <div className="text-sm text-slate-400">{credit.reference_number}</div>
+                    <div className="text-white font-semibold mb-1" style={{ fontSize: '16px' }}>{credit.type}</div>
+                    <div style={{ fontSize: '14px', color: '#94A3B8' }}>{credit.reference_number}</div>
                   </div>
                 </div>
                 <ChevronRight className="w-5 h-5 text-slate-400" />

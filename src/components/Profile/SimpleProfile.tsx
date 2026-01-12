@@ -74,10 +74,11 @@ export function SimpleProfile() {
 
         <button
           onClick={handleLogout}
-          className="w-full bg-slate-800 hover:bg-slate-700 text-white rounded-xl p-4 flex items-center justify-center gap-3 transition-colors"
+          className="w-full bg-slate-800 hover:bg-slate-700 text-white rounded-xl flex items-center justify-center gap-3 transition-colors"
+          style={{ height: '52px' }}
         >
           <LogOut className="w-5 h-5" />
-          <span className="font-semibold">Se déconnecter</span>
+          <span className="font-semibold">Se deconnecter</span>
         </button>
       </div>
 

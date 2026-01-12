@@ -87,7 +87,7 @@ export function Accueil() {
         <p className="text-xl font-bold text-slate-900 mb-1">
           {client.first_name} {client.last_name}
         </p>
-        <p className="text-sm font-medium text-slate-700">Client Wallfin</p>
+        <p className="font-medium" style={{ fontSize: '14px', color: '#6B7280' }}>Client Wallfin</p>
       </section>
 
       <section
@@ -198,7 +198,8 @@ export function Accueil() {
           <button
             onClick={handleEdit}
             aria-label="Modifier mes informations personnelles"
-            className="w-full mt-4 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-lg min-h-[48px] flex items-center justify-center gap-2 transition-colors font-medium"
+            className="w-full mt-4 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-lg flex items-center justify-center gap-2 transition-colors font-medium"
+            style={{ height: '48px', fontSize: '16px' }}
           >
             <Edit className="w-5 h-5" aria-hidden="true" />
             Modifier mes informations
@@ -209,7 +210,8 @@ export function Accueil() {
       <button
         onClick={handleLogout}
         aria-label="Se deconnecter de l'espace client"
-        className="w-full bg-slate-800 hover:bg-slate-700 text-white rounded-xl min-h-[56px] flex items-center justify-center gap-3 transition-colors"
+        className="w-full bg-slate-800 hover:bg-slate-700 text-white rounded-xl flex items-center justify-center gap-3 transition-colors"
+        style={{ height: '52px' }}
       >
         <LogOut className="w-5 h-5" aria-hidden="true" />
         <span className="font-semibold text-base">Se deconnecter</span>

@@ -31,9 +31,10 @@ export function BottomNav() {
       role="navigation"
       aria-label="Navigation principale"
       className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 shadow-lg z-50"
+      style={{ minHeight: '70px' }}
     >
-      <div className="max-w-md mx-auto">
-        <div className="flex items-center justify-around px-2 py-2">
+      <div className="max-w-md mx-auto h-full">
+        <div className="flex items-center justify-around px-2 py-3 h-full">
           {navItems.map((item) => {
             const isActive = currentView === item.id;
             const Icon = item.icon;
@@ -44,7 +45,7 @@ export function BottomNav() {
                 onClick={() => navigateTo(item.id)}
                 aria-label={item.ariaLabel}
                 aria-current={isActive ? 'page' : undefined}
-                className={`flex flex-col items-center justify-center gap-1.5 min-w-[80px] min-h-[56px] px-4 py-2 rounded-xl transition-colors ${
+                className={`flex flex-col items-center justify-center gap-1.5 min-w-[80px] min-h-[60px] px-4 py-2 rounded-xl transition-colors ${
                   isActive
                     ? 'bg-orange-50 border-2 border-orange-500'
                     : 'border-2 border-transparent hover:bg-slate-50'
@@ -52,7 +53,7 @@ export function BottomNav() {
               >
                 <Icon
                   aria-hidden="true"
-                  className={`w-6 h-6 ${
+                  className={`w-7 h-7 ${
                     isActive ? 'text-orange-500' : 'text-slate-600'
                   }`}
                 />
@@ -60,6 +61,7 @@ export function BottomNav() {
                   className={`text-sm font-medium ${
                     isActive ? 'text-orange-500' : 'text-slate-600'
                   }`}
+                  style={{ fontSize: '14px' }}
                 >
                   {item.label}
                 </span>
