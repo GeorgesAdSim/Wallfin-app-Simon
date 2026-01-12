@@ -12,9 +12,11 @@ export function Header() {
     <header className="bg-white border-b border-gray-100 px-4 py-4 sticky top-0 z-40">
       <div className="max-w-lg mx-auto flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center">
-            <span className="text-white font-bold text-lg">W</span>
-          </div>
+          <img
+            src="/images_(3).png"
+            alt="Wallfin"
+            className="w-10 h-10 rounded-xl object-cover"
+          />
           <div>
             <h1 className="text-lg font-semibold text-gray-900">Wallfin</h1>
             <p className="text-xs text-gray-500">Espace Client</p>

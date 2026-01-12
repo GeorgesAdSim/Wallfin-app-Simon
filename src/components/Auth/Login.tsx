@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useApp } from '../../context/AppContext';
-import { Square } from 'lucide-react';
 
 export function Login() {
   const { navigateTo, setAuthenticated } = useApp();
@@ -23,9 +22,11 @@ export function Login() {
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-3 mb-2">
-            <div className="bg-orange-500 rounded-lg p-2">
-              <Square className="w-8 h-8 text-white" fill="currentColor" />
-            </div>
+            <img
+              src="/images_(3).png"
+              alt="Wallfin"
+              className="w-12 h-12 rounded-xl object-cover"
+            />
             <div className="text-left">
               <div className="text-2xl font-bold text-slate-900">Wallfin</div>
               <div className="text-sm text-slate-600">Espace Client</div>
