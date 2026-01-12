@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useApp } from '../../context/AppContext';
-import { Plus, ChevronRight, Send, Loader2, CheckCircle, XCircle } from 'lucide-react';
+import { Plus, ChevronRight, Send, Loader2, CheckCircle, XCircle, RefreshCcw } from 'lucide-react';
 import { creditTypeIcons } from '../../data/mockData';
 
 export function Credits() {
@@ -12,6 +12,15 @@ export function Credits() {
   const [isLoading, setIsLoading] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [showError, setShowError] = useState(false);
+
+  const [earlyRepaymentCreditId, setEarlyRepaymentCreditId] = useState('');
+  const [earlyRepaymentType, setEarlyRepaymentType] = useState<'total' | 'partial'>('total');
+  const [earlyRepaymentAmount, setEarlyRepaymentAmount] = useState('');
+  const [earlyRepaymentComment, setEarlyRepaymentComment] = useState('');
+  const [earlyRepaymentAmountError, setEarlyRepaymentAmountError] = useState('');
+  const [isEarlyRepaymentLoading, setIsEarlyRepaymentLoading] = useState(false);
+  const [showEarlyRepaymentSuccess, setShowEarlyRepaymentSuccess] = useState(false);
+  const [showEarlyRepaymentError, setShowEarlyRepaymentError] = useState(false);
 
   if (!client) return null;
 
@@ -93,6 +102,83 @@ export function Credits() {
       setIsLoading(false);
     }
   };
+
+  const validateEarlyRepaymentAmount = (value: string, maxAmount: number): boolean => {
+    const num = parseFloat(value);
+    if (!value || isNaN(num)) {
+      setEarlyRepaymentAmountError('Veuillez entrer un montant');
+      return false;
+    }
+    if (num < 100) {
+      setEarlyRepaymentAmountError('Le montant minimum est de 100 EUR');
+      return false;
+    }
+    if (num > maxAmount) {
+      setEarlyRepaymentAmountError(`Le montant ne peut pas depasser ${maxAmount.toLocaleString('fr-BE')} EUR`);
+      return false;
+    }
+    setEarlyRepaymentAmountError('');
+    return true;
+  };
+
+  const handleEarlyRepaymentRequest = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!earlyRepaymentCreditId) return;
+
+    const selectedCredit = credits.find(c => c.id === earlyRepaymentCreditId);
+    if (!selectedCredit) return;
+
+    if (earlyRepaymentType === 'partial' && !validateEarlyRepaymentAmount(earlyRepaymentAmount, selectedCredit.restant_du)) {
+      return;
+    }
+
+    setIsEarlyRepaymentLoading(true);
+    setShowEarlyRepaymentSuccess(false);
+    setShowEarlyRepaymentError(false);
+
+    try {
+      const apiUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-early-repayment-request`;
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          creditType: selectedCredit.type,
+          creditReference: selectedCredit.reference_number,
+          clientName: `${client.first_name} ${client.last_name}`,
+          clientEmail: client.email,
+          repaymentType: earlyRepaymentType,
+          amount: earlyRepaymentType === 'partial' ? parseFloat(earlyRepaymentAmount) : selectedCredit.restant_du,
+          remainingBalance: selectedCredit.restant_du,
+          comment: earlyRepaymentComment.trim(),
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to send request');
+      }
+
+      setShowEarlyRepaymentSuccess(true);
+      setEarlyRepaymentCreditId('');
+      setEarlyRepaymentType('total');
+      setEarlyRepaymentAmount('');
+      setEarlyRepaymentComment('');
+      setEarlyRepaymentAmountError('');
+
+      setTimeout(() => setShowEarlyRepaymentSuccess(false), 5000);
+    } catch (error) {
+      console.error('Error sending request:', error);
+      setShowEarlyRepaymentError(true);
+      setTimeout(() => setShowEarlyRepaymentError(false), 8000);
+    } finally {
+      setIsEarlyRepaymentLoading(false);
+    }
+  };
+
+  const selectedEarlyRepaymentCredit = credits.find(c => c.id === earlyRepaymentCreditId);
 
   return (
     <div className="pb-20 px-4 py-6">
@@ -283,6 +369,177 @@ export function Credits() {
 
             <p className="text-xs text-slate-500 text-center">
               Votre demande sera etudiee par l'equipe Wallfin qui vous recontactera dans les plus brefs delais.
+            </p>
+          </form>
+        </div>
+      )}
+
+      {credits.length > 0 && (
+        <div className="mt-6 bg-white rounded-xl border border-slate-200 p-5">
+          <div className="flex items-center gap-2 mb-2">
+            <RefreshCcw className="w-5 h-5 text-orange-500" />
+            <h3 className="font-bold text-slate-900">Remboursement anticipe</h3>
+          </div>
+          <p className="text-sm text-slate-500 mb-4">Vous souhaitez rembourser tout ou partie de votre credit ?</p>
+
+          {showEarlyRepaymentSuccess && (
+            <div className="bg-green-50 border border-green-200 rounded-lg p-3 mb-4 flex items-start gap-2">
+              <CheckCircle className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
+              <div>
+                <div className="font-medium text-green-900 text-sm">Demande envoyee</div>
+                <div className="text-green-700 text-xs">L'equipe Wallfin vous recontactera pour finaliser votre remboursement.</div>
+              </div>
+            </div>
+          )}
+
+          {showEarlyRepaymentError && (
+            <div className="bg-red-50 border border-red-200 rounded-lg p-3 mb-4 flex items-start gap-2">
+              <XCircle className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" />
+              <div>
+                <div className="font-medium text-red-900 text-sm">Erreur</div>
+                <div className="text-red-700 text-xs">Veuillez reessayer ou appelez le +32 4 228 19 42</div>
+              </div>
+            </div>
+          )}
+
+          <form onSubmit={handleEarlyRepaymentRequest} className="space-y-4">
+            <div>
+              <label htmlFor="earlyRepaymentCreditSelect" className="block text-sm font-medium text-slate-600 mb-1.5">
+                Credit concerne *
+              </label>
+              <select
+                id="earlyRepaymentCreditSelect"
+                value={earlyRepaymentCreditId}
+                onChange={(e) => {
+                  setEarlyRepaymentCreditId(e.target.value);
+                  setEarlyRepaymentAmount('');
+                  setEarlyRepaymentAmountError('');
+                }}
+                className="w-full px-4 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                style={{ height: '48px', fontSize: '16px', color: earlyRepaymentCreditId ? '#1e293b' : '#6B7280' }}
+                required
+              >
+                <option value="" style={{ color: '#6B7280' }}>Selectionnez un credit</option>
+                {credits.map((credit) => (
+                  <option key={credit.id} value={credit.id} style={{ color: '#1e293b' }}>
+                    {credit.type} - {credit.reference_number}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {selectedEarlyRepaymentCredit && (
+              <div className="bg-slate-50 rounded-lg p-3 text-sm">
+                <div className="flex justify-between items-center">
+                  <span className="text-slate-600">Restant du:</span>
+                  <span className="font-semibold text-slate-900">
+                    {selectedEarlyRepaymentCredit.restant_du.toLocaleString('fr-BE')} EUR
+                  </span>
+                </div>
+              </div>
+            )}
+
+            <div>
+              <label className="block text-sm font-medium text-slate-600 mb-2">
+                Type de remboursement *
+              </label>
+              <div className="flex gap-3">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setEarlyRepaymentType('total');
+                    setEarlyRepaymentAmount('');
+                    setEarlyRepaymentAmountError('');
+                  }}
+                  className={`flex-1 py-3 px-4 rounded-lg border-2 transition-colors font-medium text-sm ${
+                    earlyRepaymentType === 'total'
+                      ? 'border-orange-500 bg-orange-50 text-orange-700'
+                      : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300'
+                  }`}
+                >
+                  Total
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setEarlyRepaymentType('partial')}
+                  className={`flex-1 py-3 px-4 rounded-lg border-2 transition-colors font-medium text-sm ${
+                    earlyRepaymentType === 'partial'
+                      ? 'border-orange-500 bg-orange-50 text-orange-700'
+                      : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300'
+                  }`}
+                >
+                  Partiel
+                </button>
+              </div>
+            </div>
+
+            {earlyRepaymentType === 'partial' && selectedEarlyRepaymentCredit && (
+              <div>
+                <label htmlFor="earlyRepaymentAmountInput" className="block text-sm font-medium text-slate-600 mb-1.5">
+                  Montant a rembourser *
+                </label>
+                <div className="relative">
+                  <input
+                    type="number"
+                    id="earlyRepaymentAmountInput"
+                    value={earlyRepaymentAmount}
+                    onChange={(e) => {
+                      setEarlyRepaymentAmount(e.target.value);
+                      if (earlyRepaymentAmountError) setEarlyRepaymentAmountError('');
+                    }}
+                    placeholder={`Max: ${selectedEarlyRepaymentCredit.restant_du.toLocaleString('fr-BE')}`}
+                    min="100"
+                    max={selectedEarlyRepaymentCredit.restant_du}
+                    className={`w-full px-4 pr-14 rounded-lg border focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
+                      earlyRepaymentAmountError ? 'border-red-400' : 'border-slate-300'
+                    }`}
+                    style={{ height: '48px', fontSize: '16px' }}
+                    required
+                  />
+                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 font-medium">EUR</span>
+                </div>
+                {earlyRepaymentAmountError && <p className="mt-1.5 text-sm text-red-600">{earlyRepaymentAmountError}</p>}
+                <p className="mt-1 text-xs text-slate-400">Minimum 100 EUR</p>
+              </div>
+            )}
+
+            <div>
+              <label htmlFor="earlyRepaymentCommentInput" className="block text-sm font-medium text-slate-600 mb-1.5">
+                Commentaire (facultatif)
+              </label>
+              <textarea
+                id="earlyRepaymentCommentInput"
+                value={earlyRepaymentComment}
+                onChange={(e) => setEarlyRepaymentComment(e.target.value.slice(0, 500))}
+                rows={3}
+                className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent resize-none placeholder-slate-400"
+                placeholder="Precisions sur votre demande..."
+                style={{ fontSize: '16px' }}
+              />
+              <p className="mt-1 text-xs text-slate-400 text-right">{earlyRepaymentComment.length}/500</p>
+            </div>
+
+            <button
+              type="submit"
+              disabled={isEarlyRepaymentLoading}
+              className="w-full bg-orange-500 hover:bg-orange-600 text-white rounded-xl flex items-center justify-center gap-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-semibold"
+              style={{ height: '52px', fontSize: '16px' }}
+            >
+              {isEarlyRepaymentLoading ? (
+                <>
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  Envoi en cours...
+                </>
+              ) : (
+                <>
+                  <Send className="w-5 h-5" />
+                  Envoyer ma demande
+                </>
+              )}
+            </button>
+
+            <p className="text-xs text-slate-500 text-center">
+              Votre demande sera etudiee par l'equipe Wallfin qui vous recontactera pour vous communiquer le decompte exact.
             </p>
           </form>
         </div>
