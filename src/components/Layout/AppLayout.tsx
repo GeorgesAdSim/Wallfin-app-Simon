@@ -21,7 +21,7 @@ export function AppLayout({ children, showBottomNav = true, showHeader = true }:
       {isDemo && (
         <div className="bg-orange-500 text-white py-2 px-4 text-center text-sm font-medium" role="status">
           <Info className="inline w-4 h-4 mr-2" aria-hidden="true" />
-          Mode demonstration - Donnees fictives a titre indicatif
+          Mode demonstration - Donnees fictives a titre indicatif uniquement
         </div>
       )}
 

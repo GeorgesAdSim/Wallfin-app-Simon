@@ -140,6 +140,12 @@ export function Credits() {
           })}
         </div>
       </div>
+
+      <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 mt-6">
+        <p className="text-amber-800 text-xs leading-relaxed text-center">
+          Les montants affiches sont donnes a titre indicatif et peuvent differer des montants reels. Pour toute information officielle, contactez Wallfin au +32 4 228 19 42.
+        </p>
+      </div>
     </div>
   );
 }

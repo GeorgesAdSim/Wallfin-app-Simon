@@ -247,6 +247,12 @@ export function SimpleCreditDetail() {
           )}
         </div>
 
+        <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
+          <p className="text-amber-800 text-xs leading-relaxed text-center">
+            Informations indicatives. Les montants, dates et echeances affiches peuvent varier. Referez-vous a votre contrat de credit pour les donnees officielles.
+          </p>
+        </div>
+
         <div className="bg-white rounded-2xl p-5 shadow-sm">
           <h3 className="text-base font-semibold text-slate-900 mb-2">Besoin d'aide ?</h3>
           <p className="text-sm text-slate-500 mb-4">Une question sur ce credit ?</p>
