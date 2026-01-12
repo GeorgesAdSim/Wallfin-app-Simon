@@ -6,6 +6,7 @@ import { Credits } from './components/Dashboard/Credits';
 import { Demandes } from './components/Demandes/Demandes';
 import { SimpleCreditDetail } from './components/Credits/SimpleCreditDetail';
 import { AppLayout } from './components/Layout/AppLayout';
+import { InstallBanner } from './components/PWA/InstallBanner';
 
 function AppContent() {
   const { currentView, isAuthenticated } = useApp();
@@ -43,6 +44,7 @@ function App() {
   return (
     <AppProvider>
       <AppContent />
+      <InstallBanner />
     </AppProvider>
   );
 }
