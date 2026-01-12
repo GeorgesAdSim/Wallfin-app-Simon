@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import { useApp } from '../../context/AppContext';
 import { BottomNav } from '../Navigation/BottomNav';
-import { Square, Bell, Info } from 'lucide-react';
+import { Bell, Info } from 'lucide-react';
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -29,9 +29,11 @@ export function AppLayout({ children, showBottomNav = true, showHeader = true }:
         <header className="bg-white border-b border-slate-200">
           <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="bg-orange-500 rounded-lg p-2" aria-hidden="true">
-                <Square className="w-6 h-6 text-white" fill="currentColor" />
-              </div>
+              <img
+                src="/images_(3).png"
+                alt="Wallfin"
+                className="w-10 h-10 rounded-xl object-cover"
+              />
               <div>
                 <div className="text-lg font-bold text-slate-900">Wallfin</div>
                 <div className="text-sm text-slate-700">Espace Client</div>
