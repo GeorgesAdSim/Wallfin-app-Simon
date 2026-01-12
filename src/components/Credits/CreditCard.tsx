@@ -1,7 +1,6 @@
-import { Car, Home, Wallet, Wrench, ShoppingBag, ChevronRight } from 'lucide-react';
+import { Car, Home, Wallet, Wrench, Plane, ChevronRight } from 'lucide-react';
 import type { Credit } from '../../types';
 import { formatCurrency, calculateProgress } from '../../utils/format';
-import { creditTypeLabels } from '../../data/mockData';
 import { useApp } from '../../context/AppContext';
 
 interface CreditCardProps {
@@ -9,20 +8,19 @@ interface CreditCardProps {
   compact?: boolean;
 }
 
-const iconMap = {
-  personnel: Wallet,
-  auto: Car,
-  immobilier: Home,
-  travaux: Wrench,
-  consommation: ShoppingBag,
+const iconMap: Record<string, typeof Car> = {
+  'Crédit Auto': Car,
+  'Prêt Travaux': Wrench,
+  'Crédit Énergie': Home,
+  'Prêt Personnel': Wallet,
+  'Prêt Vacances': Plane,
 };
 
 export function CreditCard({ credit, compact = false }: CreditCardProps) {
   const { navigateTo } = useApp();
-  const Icon = iconMap[credit.type];
-  const progress = calculateProgress(credit.total_amount, credit.remaining_amount);
-  const paidAmount = credit.total_amount - credit.remaining_amount;
-  const creditLabel = creditTypeLabels[credit.type];
+  const Icon = iconMap[credit.type] || Wallet;
+  const progress = calculateProgress(credit.montant_initial, credit.restant_du);
+  const paidAmount = credit.montant_initial - credit.restant_du;
 
   const handleClick = () => {
     navigateTo('credit-detail', credit.id);
@@ -32,7 +30,7 @@ export function CreditCard({ credit, compact = false }: CreditCardProps) {
     return (
       <button
         onClick={handleClick}
-        aria-label={`Voir le detail du ${creditLabel}, reference ${credit.reference}`}
+        aria-label={`Voir le detail du ${credit.type}, reference ${credit.reference_number}`}
         className="w-full bg-gray-900 rounded-2xl text-left hover:bg-gray-800 transition-colors group min-h-[120px]"
         style={{ padding: '20px' }}
       >
@@ -42,8 +40,8 @@ export function CreditCard({ credit, compact = false }: CreditCardProps) {
               <Icon className="w-8 h-8 text-orange-400" aria-hidden="true" />
             </div>
             <div>
-              <p className="text-white font-medium" style={{ fontSize: '14px' }}>{creditLabel}</p>
-              <p style={{ fontSize: '14px', color: '#94A3B8' }}>{credit.reference}</p>
+              <p className="text-white font-medium" style={{ fontSize: '14px' }}>{credit.type}</p>
+              <p style={{ fontSize: '14px', color: '#94A3B8' }}>{credit.reference_number}</p>
             </div>
           </div>
           <ChevronRight className="w-6 h-6 text-gray-400 group-hover:text-orange-400 transition-colors" aria-hidden="true" />
@@ -52,7 +50,7 @@ export function CreditCard({ credit, compact = false }: CreditCardProps) {
         <div className="space-y-2">
           <div className="flex justify-between" style={{ fontSize: '14px' }}>
             <span className="text-gray-300">Mensualite</span>
-            <span className="text-white font-semibold">{formatCurrency(credit.monthly_payment)}</span>
+            <span className="text-white font-semibold">{formatCurrency(credit.mensualite)}</span>
           </div>
           <div
             className="h-2 bg-gray-800 rounded-full overflow-hidden"
@@ -68,7 +66,7 @@ export function CreditCard({ credit, compact = false }: CreditCardProps) {
             />
           </div>
           <div className="flex justify-between" style={{ fontSize: '14px' }}>
-            <span style={{ color: '#94A3B8' }}>{credit.remaining_months} mois restants</span>
+            <span style={{ color: '#94A3B8' }}>{credit.echeances_restantes} mois restants</span>
             <span className="text-orange-400 font-medium">{progress.toFixed(0)}% rembourse</span>
           </div>
         </div>
@@ -79,7 +77,7 @@ export function CreditCard({ credit, compact = false }: CreditCardProps) {
   return (
     <button
       onClick={handleClick}
-      aria-label={`Voir le detail du ${creditLabel}, reference ${credit.reference}`}
+      aria-label={`Voir le detail du ${credit.type}, reference ${credit.reference_number}`}
       className="w-full bg-gray-900 rounded-2xl text-left hover:bg-gray-800 transition-colors group min-h-[200px]"
       style={{ padding: '20px' }}
     >
@@ -89,8 +87,8 @@ export function CreditCard({ credit, compact = false }: CreditCardProps) {
             <Icon className="w-8 h-8 text-orange-400" aria-hidden="true" />
           </div>
           <div>
-            <p className="text-white font-semibold" style={{ fontSize: '16px' }}>{creditLabel}</p>
-            <p style={{ fontSize: '14px', color: '#94A3B8' }}>{credit.reference}</p>
+            <p className="text-white font-semibold" style={{ fontSize: '16px' }}>{credit.type}</p>
+            <p style={{ fontSize: '14px', color: '#94A3B8' }}>{credit.reference_number}</p>
           </div>
         </div>
         <ChevronRight className="w-6 h-6 text-gray-400 group-hover:text-orange-400 transition-colors" aria-hidden="true" />
@@ -99,19 +97,19 @@ export function CreditCard({ credit, compact = false }: CreditCardProps) {
       <div className="grid grid-cols-2 gap-4 mb-4">
         <div>
           <p className="text-gray-300 font-medium mb-1" style={{ fontSize: '14px' }}>Montant emprunte</p>
-          <p className="text-white font-semibold">{formatCurrency(credit.total_amount)}</p>
+          <p className="text-white font-semibold">{formatCurrency(credit.montant_initial)}</p>
         </div>
         <div>
           <p className="text-gray-300 font-medium mb-1" style={{ fontSize: '14px' }}>Reste a payer</p>
-          <p className="text-white font-semibold">{formatCurrency(credit.remaining_amount)}</p>
+          <p className="text-white font-semibold">{formatCurrency(credit.restant_du)}</p>
         </div>
         <div>
           <p className="text-gray-300 font-medium mb-1" style={{ fontSize: '14px' }}>Mensualite</p>
-          <p className="text-orange-400 font-semibold">{formatCurrency(credit.monthly_payment)}</p>
+          <p className="text-orange-400 font-semibold">{formatCurrency(credit.mensualite)}</p>
         </div>
         <div>
           <p className="text-gray-300 font-medium mb-1" style={{ fontSize: '14px' }}>Mois restants</p>
-          <p className="text-white font-semibold">{credit.remaining_months} mois</p>
+          <p className="text-white font-semibold">{credit.echeances_restantes} mois</p>
         </div>
       </div>
 

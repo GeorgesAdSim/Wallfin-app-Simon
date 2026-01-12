@@ -27,6 +27,7 @@ export const mockCredits: Credit[] = [
     date_debut: '2023-06-15',
     date_fin: '2028-06-15',
     prochaine_echeance: '2025-02-15',
+    jour_prelevement: 15,
     statut: 'en_cours',
     created_at: '2023-06-15T09:00:00Z',
     updated_at: '2025-01-01T00:00:00Z',
@@ -46,6 +47,7 @@ export const mockCredits: Credit[] = [
     date_debut: '2024-08-01',
     date_fin: '2031-08-01',
     prochaine_echeance: '2025-02-01',
+    jour_prelevement: 1,
     statut: 'en_cours',
     created_at: '2024-08-01T09:00:00Z',
     updated_at: '2025-01-01T00:00:00Z',
@@ -58,4 +60,12 @@ export const creditTypeIcons: Record<string, string> = {
   'Crédit Énergie': '☀️',
   'Prêt Personnel': '💰',
   'Prêt Vacances': '✈️',
+};
+
+export const creditTypeLabels: Record<string, string> = {
+  'Crédit Auto': 'Credit Auto',
+  'Prêt Travaux': 'Pret Travaux',
+  'Crédit Énergie': 'Credit Energie',
+  'Prêt Personnel': 'Pret Personnel',
+  'Prêt Vacances': 'Pret Vacances',
 };

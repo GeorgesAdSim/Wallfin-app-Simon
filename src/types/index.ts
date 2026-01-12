@@ -30,6 +30,7 @@ export interface Credit {
   date_debut: string;
   date_fin: string;
   prochaine_echeance: string;
+  jour_prelevement: number;
   statut: CreditStatus;
   created_at: string;
   updated_at: string;
