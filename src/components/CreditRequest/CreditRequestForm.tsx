@@ -220,15 +220,16 @@ export function CreditRequestForm() {
     <div className="space-y-6">
       <button
         onClick={() => navigateTo('dashboard')}
-        className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
+        aria-label="Retour au tableau de bord"
+        className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors min-h-[44px]"
       >
-        <ArrowLeft className="w-5 h-5" />
+        <ArrowLeft className="w-5 h-5" aria-hidden="true" />
         <span className="text-sm font-medium">Retour</span>
       </button>
 
       <div>
         <h2 className="text-xl font-bold text-gray-900">Nouvelle demande de credit</h2>
-        <p className="text-sm text-gray-500">Completez le formulaire en {STEP_LABELS.length} etapes</p>
+        <p className="text-sm text-slate-600">Completez le formulaire en {STEP_LABELS.length} etapes</p>
       </div>
 
       <StepIndicator
@@ -245,34 +246,38 @@ export function CreditRequestForm() {
         {currentStep > 1 && (
           <button
             onClick={handlePrev}
-            className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-colors font-medium"
+            aria-label={`Retour a l'etape ${currentStep - 1}`}
+            className="flex-1 flex items-center justify-center gap-2 px-6 min-h-[56px] bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-colors font-medium text-base"
           >
-            <ArrowLeft className="w-5 h-5" />
+            <ArrowLeft className="w-5 h-5" aria-hidden="true" />
             <span>Precedent</span>
           </button>
         )}
         {currentStep < 5 ? (
           <button
             onClick={handleNext}
-            className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-orange-500 text-white rounded-xl hover:bg-orange-600 transition-colors font-medium"
+            aria-label={`Passer a l'etape ${currentStep + 1}`}
+            className="flex-1 flex items-center justify-center gap-2 px-6 min-h-[56px] bg-orange-500 text-white rounded-xl hover:bg-orange-600 transition-colors font-medium text-base"
           >
             <span>Suivant</span>
-            <ArrowRight className="w-5 h-5" />
+            <ArrowRight className="w-5 h-5" aria-hidden="true" />
           </button>
         ) : (
           <button
             onClick={handleSubmit}
             disabled={isSubmitting}
-            className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-orange-500 text-white rounded-xl hover:bg-orange-600 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+            aria-label="Envoyer ma demande de credit"
+            aria-busy={isSubmitting}
+            className="flex-1 flex items-center justify-center gap-2 px-6 min-h-[56px] bg-orange-500 text-white rounded-xl hover:bg-orange-600 transition-colors font-semibold text-lg disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isSubmitting ? (
               <>
-                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" aria-hidden="true" />
                 <span>Envoi en cours...</span>
               </>
             ) : (
               <>
-                <Send className="w-5 h-5" />
+                <Send className="w-5 h-5" aria-hidden="true" />
                 <span>Envoyer ma demande</span>
               </>
             )}
