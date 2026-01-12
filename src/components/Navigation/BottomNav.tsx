@@ -1,5 +1,5 @@
 import { useApp } from '../../context/AppContext';
-import { Grid2X2, CreditCard, Mail, MessageCircle } from 'lucide-react';
+import { User, CreditCard, Mail, MessageCircle } from 'lucide-react';
 import type { ViewType } from '../../types';
 
 export function BottomNav() {
@@ -8,9 +8,9 @@ export function BottomNav() {
   const navItems = [
     {
       id: 'accueil' as ViewType,
-      label: 'Accueil',
-      icon: Grid2X2,
-      ariaLabel: 'Acceder a mon compte',
+      label: 'Profile',
+      icon: User,
+      ariaLabel: 'Voir mon profil',
     },
     {
       id: 'credits' as ViewType,
