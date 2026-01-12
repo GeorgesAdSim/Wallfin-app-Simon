@@ -1,4 +1,4 @@
-import type { Client, Credit } from '../types';
+import type { Client, Credit, Message } from '../types';
 
 export const mockClient: Client = {
   id: 'client-demo-1',
@@ -69,3 +69,38 @@ export const creditTypeLabels: Record<string, string> = {
   'Prêt Personnel': 'Pret Personnel',
   'Prêt Vacances': 'Pret Vacances',
 };
+
+export const mockMessages: Message[] = [
+  {
+    id: 'msg-001',
+    titre: 'Confirmation de paiement',
+    contenu: "Votre echeance du 15/01/2025 pour votre Credit Auto (WF-2023-001542) a bien ete prelevee.\n\nMontant : 299,83 EUR\n\nMerci de votre confiance.\n\nL'equipe Wallfin",
+    date: '2025-01-15T10:30:00',
+    lu: false,
+    type: 'paiement',
+  },
+  {
+    id: 'msg-002',
+    titre: 'Bonne annee 2025 !',
+    contenu: "Toute l'equipe Wallfin vous souhaite une excellente annee 2025 !\n\nNous restons a votre disposition pour tous vos projets de financement.\n\nCordialement,\nL'equipe Wallfin",
+    date: '2025-01-01T09:00:00',
+    lu: true,
+    type: 'info',
+  },
+  {
+    id: 'msg-003',
+    titre: 'Rappel : Prochaine echeance',
+    contenu: "Votre prochaine echeance pour votre Pret Travaux (WF-2024-003891) sera prelevee le 01/02/2025.\n\nMontant : 344,79 EUR\n\nAssurez-vous que votre compte est suffisamment approvisionne.\n\nL'equipe Wallfin",
+    date: '2024-12-26T14:00:00',
+    lu: true,
+    type: 'rappel',
+  },
+  {
+    id: 'msg-004',
+    titre: 'Votre espace client est disponible',
+    contenu: "Bienvenue sur votre Espace Client Wallfin !\n\nVous pouvez desormais :\n- Consulter vos credits en cours\n- Suivre vos remboursements\n- Nous contacter facilement\n\nN'hesitez pas a nous faire part de vos retours.\n\nL'equipe Wallfin",
+    date: '2024-12-20T11:00:00',
+    lu: true,
+    type: 'info',
+  },
+];

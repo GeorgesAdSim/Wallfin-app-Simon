@@ -1,9 +1,9 @@
 import { useApp } from '../../context/AppContext';
-import { Grid2X2, CreditCard, MessageCircle } from 'lucide-react';
+import { Grid2X2, CreditCard, Mail, MessageCircle } from 'lucide-react';
 import type { ViewType } from '../../types';
 
 export function BottomNav() {
-  const { currentView, navigateTo } = useApp();
+  const { currentView, navigateTo, unreadMessagesCount } = useApp();
 
   const navItems = [
     {
@@ -17,6 +17,13 @@ export function BottomNav() {
       label: 'Credits',
       icon: CreditCard,
       ariaLabel: 'Voir mes credits',
+    },
+    {
+      id: 'messages' as ViewType,
+      label: 'Messages',
+      icon: Mail,
+      ariaLabel: 'Voir mes messages',
+      badge: unreadMessagesCount,
     },
     {
       id: 'demandes' as ViewType,
@@ -45,23 +52,29 @@ export function BottomNav() {
                 onClick={() => navigateTo(item.id)}
                 aria-label={item.ariaLabel}
                 aria-current={isActive ? 'page' : undefined}
-                className={`flex flex-col items-center justify-center gap-1.5 min-w-[80px] min-h-[60px] px-4 py-2 rounded-xl transition-colors ${
+                className={`relative flex flex-col items-center justify-center gap-1 min-w-[70px] min-h-[56px] px-3 py-2 rounded-xl transition-colors ${
                   isActive
                     ? 'bg-orange-50 border-2 border-orange-500'
                     : 'border-2 border-transparent hover:bg-slate-50'
                 }`}
               >
-                <Icon
-                  aria-hidden="true"
-                  className={`w-7 h-7 ${
-                    isActive ? 'text-orange-500' : 'text-slate-600'
-                  }`}
-                />
+                <div className="relative">
+                  <Icon
+                    aria-hidden="true"
+                    className={`w-6 h-6 ${
+                      isActive ? 'text-orange-500' : 'text-slate-600'
+                    }`}
+                  />
+                  {item.badge !== undefined && item.badge > 0 && (
+                    <span className="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center px-1">
+                      {item.badge > 99 ? '99+' : item.badge}
+                    </span>
+                  )}
+                </div>
                 <span
-                  className={`text-sm font-medium ${
+                  className={`text-xs font-medium ${
                     isActive ? 'text-orange-500' : 'text-slate-600'
                   }`}
-                  style={{ fontSize: '14px' }}
                 >
                   {item.label}
                 </span>

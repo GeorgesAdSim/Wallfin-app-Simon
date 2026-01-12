@@ -3,6 +3,8 @@ import { Login } from './components/Auth/Login';
 import { Register } from './components/Auth/Register';
 import { Accueil } from './components/Home/Accueil';
 import { Credits } from './components/Dashboard/Credits';
+import { Messages } from './components/Messages/Messages';
+import { MessageDetail } from './components/Messages/MessageDetail';
 import { Demandes } from './components/Demandes/Demandes';
 import { SimpleCreditDetail } from './components/Credits/SimpleCreditDetail';
 import { AppLayout } from './components/Layout/AppLayout';
@@ -15,8 +17,8 @@ function AppContent() {
     return currentView === 'register' ? <Register /> : <Login />;
   }
 
-  const showBottomNav = ['accueil', 'credits', 'demandes'].includes(currentView);
-  const showHeader = currentView !== 'credit-detail';
+  const showBottomNav = ['accueil', 'credits', 'messages', 'demandes'].includes(currentView);
+  const showHeader = !['credit-detail', 'message-detail'].includes(currentView);
 
   const renderView = () => {
     switch (currentView) {
@@ -24,6 +26,10 @@ function AppContent() {
         return <Accueil />;
       case 'credits':
         return <Credits />;
+      case 'messages':
+        return <Messages />;
+      case 'message-detail':
+        return <MessageDetail />;
       case 'demandes':
         return <Demandes />;
       case 'credit-detail':

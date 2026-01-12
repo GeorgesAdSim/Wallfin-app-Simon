@@ -1,4 +1,15 @@
-export type ViewType = 'login' | 'register' | 'accueil' | 'credits' | 'demandes' | 'credit-detail';
+export type ViewType = 'login' | 'register' | 'accueil' | 'credits' | 'messages' | 'message-detail' | 'demandes' | 'credit-detail';
+
+export type MessageType = 'paiement' | 'info' | 'rappel';
+
+export interface Message {
+  id: string;
+  titre: string;
+  contenu: string;
+  date: string;
+  lu: boolean;
+  type: MessageType;
+}
 
 export type CreditType = 'Crédit Auto' | 'Prêt Travaux' | 'Crédit Énergie' | 'Prêt Personnel' | 'Prêt Vacances';
 
