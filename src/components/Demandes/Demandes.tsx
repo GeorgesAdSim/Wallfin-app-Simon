@@ -24,10 +24,14 @@ export function Demandes() {
   const [subject, setSubject] = useState('');
   const [creditId, setCreditId] = useState('');
   const [message, setMessage] = useState('');
+  const [additionalAmount, setAdditionalAmount] = useState('');
+  const [amountError, setAmountError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [showError, setShowError] = useState(false);
   const [emailjsReady, setEmailjsReady] = useState(false);
+
+  const isAdditionalMoneyRequest = subject === 'Demande d\'argent supplémentaire';
 
   useEffect(() => {
     const initEmailJS = () => {
@@ -56,6 +60,24 @@ export function Demandes() {
 
   if (!client) return null;
 
+  const validateAmount = (value: string): boolean => {
+    const num = parseFloat(value);
+    if (!value || isNaN(num)) {
+      setAmountError('Veuillez entrer un montant');
+      return false;
+    }
+    if (num < 500) {
+      setAmountError('Le montant minimum est de 500 EUR');
+      return false;
+    }
+    if (num > 50000) {
+      setAmountError('Le montant maximum est de 50 000 EUR');
+      return false;
+    }
+    setAmountError('');
+    return true;
+  };
+
   const saveToHistory = (request: ContactRequest) => {
     const historyKey = `contact_history_${client.id}`;
     const existingHistory = localStorage.getItem(historyKey);
@@ -66,29 +88,23 @@ export function Demandes() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (isAdditionalMoneyRequest && !validateAmount(additionalAmount)) {
+      return;
+    }
+
     setIsLoading(true);
     setShowSuccess(false);
     setShowError(false);
 
     const clientName = `${client.first_name} ${client.last_name}`;
-    const creditReference = creditId ? credits.find(c => c.id === creditId)?.reference_number : null;
+    const selectedCredit = creditId ? credits.find(c => c.id === creditId) : null;
+    const creditReference = selectedCredit?.reference_number || null;
     const currentDate = new Date().toLocaleDateString('fr-BE');
 
-    const templateParams = {
-      to_email: 'info@wallfin.be',
-      from_name: clientName,
-      from_email: client.email,
-      from_phone: client.phone,
-      subject: subject,
-      credit_reference: creditReference || 'Non applicable',
-      message: message,
-      date: currentDate,
-    };
-
     try {
-      if (!emailjsReady || !window.emailjs) {
-        const apiUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-contact-request`;
-
+      if (isAdditionalMoneyRequest && selectedCredit) {
+        const apiUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-additional-money-request`;
         const response = await fetch(apiUrl, {
           method: 'POST',
           headers: {
@@ -96,15 +112,12 @@ export function Demandes() {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            client: {
-              firstName: client.first_name,
-              lastName: client.last_name,
-              email: client.email,
-              phone: client.phone,
-            },
-            subject,
-            creditReference,
-            message,
+            creditType: selectedCredit.type,
+            creditReference: selectedCredit.reference_number,
+            clientName,
+            clientEmail: client.email,
+            amount: parseFloat(additionalAmount),
+            comment: message.trim(),
           }),
         });
 
@@ -112,17 +125,55 @@ export function Demandes() {
           throw new Error('Failed to send via edge function');
         }
       } else {
-        const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
-        const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+        const templateParams = {
+          to_email: 'info@wallfin.be',
+          from_name: clientName,
+          from_email: client.email,
+          from_phone: client.phone,
+          subject: subject,
+          credit_reference: creditReference || 'Non applicable',
+          message: message,
+          date: currentDate,
+        };
 
-        await window.emailjs.send(serviceId, templateId, templateParams);
+        if (!emailjsReady || !window.emailjs) {
+          const apiUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-contact-request`;
+
+          const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              client: {
+                firstName: client.first_name,
+                lastName: client.last_name,
+                email: client.email,
+                phone: client.phone,
+              },
+              subject,
+              creditReference,
+              message,
+            }),
+          });
+
+          if (!response.ok) {
+            throw new Error('Failed to send via edge function');
+          }
+        } else {
+          const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+          const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+
+          await window.emailjs.send(serviceId, templateId, templateParams);
+        }
       }
 
       saveToHistory({
         id: crypto.randomUUID(),
         date: currentDate,
         subject,
-        message,
+        message: isAdditionalMoneyRequest ? `Montant: ${additionalAmount} EUR - ${message}` : message,
         status: 'sent',
       });
 
@@ -130,6 +181,8 @@ export function Demandes() {
       setSubject('');
       setCreditId('');
       setMessage('');
+      setAdditionalAmount('');
+      setAmountError('');
 
       setTimeout(() => {
         setShowSuccess(false);
@@ -196,12 +249,18 @@ export function Demandes() {
             <select
               id="subject"
               value={subject}
-              onChange={(e) => setSubject(e.target.value)}
+              onChange={(e) => {
+                setSubject(e.target.value);
+                setCreditId('');
+                setAdditionalAmount('');
+                setAmountError('');
+              }}
               className="w-full px-4 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
               style={{ height: '48px', fontSize: '16px', color: subject ? '#1e293b' : '#6B7280' }}
               required
             >
               <option value="" style={{ color: '#6B7280' }}>Selectionnez un sujet</option>
+              <option value="Demande d'argent supplémentaire" style={{ color: '#1e293b' }}>Demande d'argent supplementaire</option>
               <option value="Question sur mon crédit" style={{ color: '#1e293b' }}>Question sur mon credit</option>
               <option value="Problème technique" style={{ color: '#1e293b' }}>Probleme technique</option>
               <option value="Modifier mes informations" style={{ color: '#1e293b' }}>Modifier mes informations</option>
@@ -209,7 +268,7 @@ export function Demandes() {
             </select>
           </div>
 
-          {subject === 'Question sur mon crédit' && (
+          {(subject === 'Question sur mon crédit' || isAdditionalMoneyRequest) && (
             <div>
               <label htmlFor="credit" className="block text-sm font-medium text-gray-600 mb-2" style={{ fontSize: '14px' }}>
                 Credit concerne *
@@ -232,21 +291,62 @@ export function Demandes() {
             </div>
           )}
 
+          {isAdditionalMoneyRequest && (
+            <div>
+              <label htmlFor="amount" className="block text-sm font-medium text-gray-600 mb-2" style={{ fontSize: '14px' }}>
+                Montant supplementaire souhaite *
+              </label>
+              <div className="relative">
+                <input
+                  type="number"
+                  id="amount"
+                  value={additionalAmount}
+                  onChange={(e) => {
+                    setAdditionalAmount(e.target.value);
+                    if (amountError) setAmountError('');
+                  }}
+                  placeholder="Ex: 2000"
+                  min="500"
+                  max="50000"
+                  className={`w-full px-4 pr-14 rounded-lg border focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
+                    amountError ? 'border-red-400' : 'border-slate-300'
+                  }`}
+                  style={{ height: '48px', fontSize: '16px' }}
+                  required
+                />
+                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 font-medium">EUR</span>
+              </div>
+              {amountError && (
+                <p className="mt-2 text-sm text-red-600">{amountError}</p>
+              )}
+              <p className="mt-2 text-xs text-slate-500">Minimum 500 EUR - Maximum 50 000 EUR</p>
+            </div>
+          )}
+
           <div>
             <label htmlFor="message" className="block text-sm font-medium text-gray-600 mb-2" style={{ fontSize: '14px' }}>
-              Message *
+              {isAdditionalMoneyRequest ? 'Commentaire (facultatif)' : 'Message *'}
             </label>
             <textarea
               id="message"
               value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              rows={6}
+              onChange={(e) => setMessage(e.target.value.slice(0, 500))}
+              rows={isAdditionalMoneyRequest ? 4 : 6}
               className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent resize-none placeholder-gray-500"
-              placeholder="Decrivez votre demande..."
-              style={{ minHeight: '150px', fontSize: '16px' }}
-              required
+              placeholder={isAdditionalMoneyRequest ? 'Decrivez votre besoin ou ajoutez des precisions...' : 'Decrivez votre demande...'}
+              style={{ minHeight: isAdditionalMoneyRequest ? '100px' : '150px', fontSize: '16px' }}
+              required={!isAdditionalMoneyRequest}
             />
+            {isAdditionalMoneyRequest && (
+              <p className="mt-1 text-xs text-slate-400 text-right">{message.length}/500</p>
+            )}
           </div>
+
+          {isAdditionalMoneyRequest && (
+            <p className="text-xs text-slate-500 text-center bg-slate-50 rounded-lg p-3">
+              Votre demande sera etudiee par l'equipe Wallfin qui vous recontactera dans les plus brefs delais.
+            </p>
+          )}
         </div>
 
         <button
