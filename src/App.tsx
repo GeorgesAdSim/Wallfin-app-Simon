@@ -7,6 +7,7 @@ import { Messages } from './components/Messages/Messages';
 import { MessageDetail } from './components/Messages/MessageDetail';
 import { Demandes } from './components/Demandes/Demandes';
 import { SimpleCreditDetail } from './components/Credits/SimpleCreditDetail';
+import { GlobalReport } from './components/Reports/GlobalReport';
 import { AppLayout } from './components/Layout/AppLayout';
 import { InstallBanner } from './components/PWA/InstallBanner';
 
@@ -18,7 +19,7 @@ function AppContent() {
   }
 
   const showBottomNav = ['accueil', 'credits', 'messages', 'demandes'].includes(currentView);
-  const showHeader = !['credit-detail', 'message-detail'].includes(currentView);
+  const showHeader = !['credit-detail', 'message-detail', 'global-report'].includes(currentView);
 
   const renderView = () => {
     switch (currentView) {
@@ -34,6 +35,8 @@ function AppContent() {
         return <Demandes />;
       case 'credit-detail':
         return <SimpleCreditDetail />;
+      case 'global-report':
+        return <GlobalReport />;
       default:
         return <Credits />;
     }

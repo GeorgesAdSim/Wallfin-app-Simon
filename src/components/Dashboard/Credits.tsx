@@ -36,42 +36,48 @@ export function Credits() {
         Bonjour, {client.first_name} {client.last_name}
       </h1>
 
-      <div className="bg-slate-800 rounded-xl p-6 mb-6 text-white">
-        <div className="text-sm text-slate-400 mb-2">Total restant a rembourser</div>
-        <div className="text-4xl font-bold mb-4">{formatAmount(totalRestantDu)}</div>
+      <button
+        onClick={() => navigateTo('global-report')}
+        className="w-full bg-slate-800 rounded-xl p-6 mb-6 text-white text-left relative cursor-pointer transition-transform duration-200 hover:scale-[1.01] active:scale-[0.98]"
+      >
+        <div className="pr-8">
+          <div className="text-sm text-slate-400 mb-2">Total restant a rembourser</div>
+          <div className="text-4xl font-bold mb-4">{formatAmount(totalRestantDu)}</div>
 
-        <div className="h-px bg-slate-700 my-4" />
+          <div className="h-px bg-slate-700 my-4" />
 
-        <div className="grid grid-cols-2 gap-4 mb-4">
-          <div>
-            <div className="text-sm text-slate-400 mb-1">Mensualites totales</div>
-            <div className="text-xl font-semibold">{formatAmount(totalMensualites)}</div>
+          <div className="grid grid-cols-2 gap-4 mb-4">
+            <div>
+              <div className="text-sm text-slate-400 mb-1">Mensualites totales</div>
+              <div className="text-xl font-semibold">{formatAmount(totalMensualites)}</div>
+            </div>
+            <div>
+              <div className="text-sm text-slate-400 mb-1">Deja rembourse</div>
+              <div className="text-xl font-semibold text-green-400">{formatAmount(totalDejaRembourse)}</div>
+            </div>
           </div>
-          <div>
-            <div className="text-sm text-slate-400 mb-1">Deja rembourse</div>
-            <div className="text-xl font-semibold text-green-400">{formatAmount(totalDejaRembourse)}</div>
-          </div>
-        </div>
 
-        <div className="mt-4">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-sm text-slate-400">Progression globale</span>
-            <span className="text-sm font-semibold text-green-400">{globalPercentage}% rembourse</span>
-          </div>
-          <div
-            className="w-full h-2.5 rounded-full overflow-hidden"
-            style={{ backgroundColor: 'rgba(255, 255, 255, 0.2)' }}
-          >
+          <div className="mt-4">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm text-slate-400">Progression globale</span>
+              <span className="text-sm font-semibold text-green-400">{globalPercentage}% rembourse</span>
+            </div>
             <div
-              className="h-full rounded-full transition-all duration-500 ease-out"
-              style={{
-                width: `${globalPercentage}%`,
-                background: 'linear-gradient(90deg, #F97316, #FB923C)',
-              }}
-            />
+              className="w-full h-2.5 rounded-full overflow-hidden"
+              style={{ backgroundColor: 'rgba(255, 255, 255, 0.2)' }}
+            >
+              <div
+                className="h-full rounded-full transition-all duration-500 ease-out"
+                style={{
+                  width: `${globalPercentage}%`,
+                  background: 'linear-gradient(90deg, #F97316, #FB923C)',
+                }}
+              />
+            </div>
           </div>
         </div>
-      </div>
+        <ChevronRight className="w-6 h-6 text-white/60 absolute right-5 top-1/2 -translate-y-1/2" />
+      </button>
 
       <button
         onClick={handleNewCredit}
