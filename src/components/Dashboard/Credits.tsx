@@ -10,12 +10,20 @@ export function Credits() {
   const totalRestantDu = credits.reduce((sum, c) => sum + c.restant_du, 0);
   const totalMensualites = credits.reduce((sum, c) => sum + c.mensualite, 0);
   const totalDejaRembourse = credits.reduce((sum, c) => sum + c.deja_rembourse, 0);
+  const totalAmount = totalDejaRembourse + totalRestantDu;
+  const globalPercentage = totalAmount > 0 ? Math.round((totalDejaRembourse / totalAmount) * 100) : 0;
 
   const formatAmount = (amount: number) => {
     return new Intl.NumberFormat('fr-BE', {
       style: 'currency',
       currency: 'EUR',
     }).format(amount);
+  };
+
+  const calculatePercentage = (dejaRembourse: number, restantDu: number) => {
+    const total = dejaRembourse + restantDu;
+    if (total === 0) return 0;
+    return Math.round((dejaRembourse / total) * 100);
   };
 
   const handleNewCredit = () => {
@@ -29,19 +37,38 @@ export function Credits() {
       </h1>
 
       <div className="bg-slate-800 rounded-xl p-6 mb-6 text-white">
-        <div className="text-sm text-slate-400 mb-2">Total restant à rembourser</div>
+        <div className="text-sm text-slate-400 mb-2">Total restant a rembourser</div>
         <div className="text-4xl font-bold mb-4">{formatAmount(totalRestantDu)}</div>
 
         <div className="h-px bg-slate-700 my-4" />
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-4 mb-4">
           <div>
-            <div className="text-sm text-slate-400 mb-1">Mensualités totales</div>
+            <div className="text-sm text-slate-400 mb-1">Mensualites totales</div>
             <div className="text-xl font-semibold">{formatAmount(totalMensualites)}</div>
           </div>
           <div>
-            <div className="text-sm text-slate-400 mb-1">Déjà remboursé</div>
+            <div className="text-sm text-slate-400 mb-1">Deja rembourse</div>
             <div className="text-xl font-semibold text-green-400">{formatAmount(totalDejaRembourse)}</div>
+          </div>
+        </div>
+
+        <div className="mt-4">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm text-slate-400">Progression globale</span>
+            <span className="text-sm font-semibold text-green-400">{globalPercentage}% rembourse</span>
+          </div>
+          <div
+            className="w-full h-2.5 rounded-full overflow-hidden"
+            style={{ backgroundColor: 'rgba(255, 255, 255, 0.2)' }}
+          >
+            <div
+              className="h-full rounded-full transition-all duration-500 ease-out"
+              style={{
+                width: `${globalPercentage}%`,
+                background: 'linear-gradient(90deg, #F97316, #FB923C)',
+              }}
+            />
           </div>
         </div>
       </div>
@@ -52,14 +79,14 @@ export function Credits() {
       >
         <Plus className="w-5 h-5" />
         <div className="text-left">
-          <div className="font-semibold">Nouveau crédit</div>
+          <div className="font-semibold">Nouveau credit</div>
           <div className="text-sm opacity-90">Faire une demande</div>
         </div>
       </button>
 
       <div>
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-bold text-slate-900">Mes crédits en cours</h2>
+          <h2 className="text-xl font-bold text-slate-900">Mes credits en cours</h2>
           {credits.length > 3 && (
             <button className="text-sm text-orange-500 hover:text-orange-600 font-medium">
               Voir tout
@@ -68,22 +95,43 @@ export function Credits() {
         </div>
 
         <div className="space-y-3">
-          {credits.map((credit) => (
-            <button
-              key={credit.id}
-              onClick={() => navigateTo('credit-detail', credit.id)}
-              className="w-full bg-slate-800 hover:bg-slate-700 rounded-xl p-4 flex items-center justify-between transition-colors text-left"
-            >
-              <div className="flex items-center gap-4">
-                <div className="text-3xl">{creditTypeIcons[credit.type] || '💰'}</div>
-                <div>
-                  <div className="text-white font-semibold mb-1">{credit.type}</div>
-                  <div className="text-sm text-slate-400">{credit.reference_number}</div>
+          {credits.map((credit) => {
+            const percentage = calculatePercentage(credit.deja_rembourse, credit.restant_du);
+            return (
+              <button
+                key={credit.id}
+                onClick={() => navigateTo('credit-detail', credit.id)}
+                className="w-full bg-slate-800 hover:bg-slate-700 rounded-xl p-4 flex items-center justify-between transition-colors text-left"
+              >
+                <div className="flex items-center gap-4 flex-1 min-w-0">
+                  <div className="text-3xl flex-shrink-0">{creditTypeIcons[credit.type] || ''}</div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-white font-semibold mb-1">{credit.type}</div>
+                    <div className="text-sm text-slate-400 mb-2">{credit.reference_number}</div>
+                    <div
+                      className="font-semibold mb-2"
+                      style={{ fontSize: '12px', color: '#22C55E' }}
+                    >
+                      {percentage}% rembourse
+                    </div>
+                    <div
+                      className="w-full h-2 rounded overflow-hidden"
+                      style={{ backgroundColor: 'rgba(255, 255, 255, 0.2)' }}
+                    >
+                      <div
+                        className="h-full rounded transition-all duration-500 ease-out"
+                        style={{
+                          width: `${percentage}%`,
+                          background: 'linear-gradient(90deg, #F97316, #FB923C)',
+                        }}
+                      />
+                    </div>
+                  </div>
                 </div>
-              </div>
-              <ChevronRight className="w-5 h-5 text-slate-400" />
-            </button>
-          ))}
+                <ChevronRight className="w-5 h-5 text-slate-400 flex-shrink-0 ml-3" />
+              </button>
+            );
+          })}
         </div>
       </div>
     </div>
