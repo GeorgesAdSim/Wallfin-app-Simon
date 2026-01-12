@@ -1,12 +1,17 @@
 import { useState } from 'react';
 import { useApp } from '../../context/AppContext';
-import { ArrowLeft, Circle, Wallet, Calendar, Clock, CreditCard, TrendingUp, Flag, Phone, MessageSquare, ChevronDown, ChevronUp } from 'lucide-react';
+import { ArrowLeft, Circle, Wallet, Calendar, Clock, CreditCard, TrendingUp, Flag, Phone, MessageSquare, ChevronDown, ChevronUp, Plus, Check, Loader2 } from 'lucide-react';
 import { creditTypeIcons } from '../../data/mockData';
 import { formatCurrency, formatShortDate, formatDate } from '../../utils/format';
 
 export function SimpleCreditDetail() {
-  const { selectedCreditId, getCreditById, navigateTo } = useApp();
+  const { selectedCreditId, getCreditById, navigateTo, client } = useApp();
   const [showAllPayments, setShowAllPayments] = useState(false);
+  const [additionalAmount, setAdditionalAmount] = useState('');
+  const [additionalComment, setAdditionalComment] = useState('');
+  const [amountError, setAmountError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
 
   if (!selectedCreditId) {
     navigateTo('credits');
@@ -72,8 +77,80 @@ export function SimpleCreditDetail() {
     navigateTo('demandes');
   };
 
+  const validateAmount = (value: string): boolean => {
+    const num = parseFloat(value);
+    if (!value || isNaN(num)) {
+      setAmountError('Veuillez entrer un montant');
+      return false;
+    }
+    if (num < 500) {
+      setAmountError('Le montant minimum est de 500 EUR');
+      return false;
+    }
+    if (num > 50000) {
+      setAmountError('Le montant maximum est de 50 000 EUR');
+      return false;
+    }
+    setAmountError('');
+    return true;
+  };
+
+  const handleAdditionalMoneySubmit = async () => {
+    if (!validateAmount(additionalAmount)) return;
+    if (!client || !credit) return;
+
+    setIsSubmitting(true);
+
+    try {
+      const apiUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-additional-money-request`;
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          creditType: credit.type,
+          creditReference: credit.reference_number,
+          clientName: `${client.first_name} ${client.last_name}`,
+          clientEmail: client.email,
+          amount: parseFloat(additionalAmount),
+          comment: additionalComment.trim(),
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Erreur lors de l\'envoi');
+      }
+
+      setShowSuccess(true);
+      setAdditionalAmount('');
+      setAdditionalComment('');
+      setAmountError('');
+
+      setTimeout(() => {
+        setShowSuccess(false);
+      }, 5000);
+    } catch (error) {
+      console.error('Error submitting additional money request:', error);
+      setAmountError('Une erreur est survenue. Veuillez reessayer.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-slate-50">
+      {showSuccess && (
+        <div className="fixed top-4 left-4 right-4 z-50 animate-in slide-in-from-top-2 duration-300">
+          <div className="bg-green-600 text-white rounded-xl p-4 shadow-lg flex items-center gap-3">
+            <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center flex-shrink-0">
+              <Check className="w-5 h-5" />
+            </div>
+            <p className="text-sm font-medium">Votre demande a bien ete envoyee. L'equipe Wallfin vous recontactera rapidement.</p>
+          </div>
+        </div>
+      )}
       <div className="bg-white border-b border-slate-200 sticky top-0 z-10">
         <div className="px-4 py-4 flex items-center gap-3">
           <button
@@ -193,6 +270,75 @@ export function SimpleCreditDetail() {
                 <p className="font-semibold text-slate-900">{credit.taeg.toFixed(2)} %</p>
               </div>
             </div>
+          </div>
+        </div>
+
+        <div className="bg-white border-2 border-orange-200 rounded-2xl p-5">
+          <div className="flex items-center gap-2 mb-1">
+            <Plus className="w-5 h-5 text-orange-500" />
+            <h3 className="text-lg font-semibold text-slate-900">Demande d'argent supplementaire</h3>
+          </div>
+          <p className="text-sm text-slate-500 mb-5">Besoin d'un montant supplementaire sur ce credit ?</p>
+
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-2">
+                Montant supplementaire souhaite *
+              </label>
+              <div className="relative">
+                <input
+                  type="number"
+                  value={additionalAmount}
+                  onChange={(e) => {
+                    setAdditionalAmount(e.target.value);
+                    if (amountError) setAmountError('');
+                  }}
+                  placeholder="Ex: 2000"
+                  min="500"
+                  max="50000"
+                  className={`w-full border rounded-lg px-4 py-3 pr-10 text-base focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-shadow ${
+                    amountError ? 'border-red-400 focus:ring-red-500 focus:border-red-500' : 'border-slate-200'
+                  }`}
+                />
+                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 font-medium">EUR</span>
+              </div>
+              {amountError && (
+                <p className="mt-2 text-sm text-red-600">{amountError}</p>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-2">
+                Commentaire (facultatif)
+              </label>
+              <textarea
+                value={additionalComment}
+                onChange={(e) => setAdditionalComment(e.target.value.slice(0, 500))}
+                placeholder="Decrivez votre besoin ou ajoutez des precisions..."
+                rows={3}
+                className="w-full border border-slate-200 rounded-lg px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-shadow resize-none"
+              />
+              <p className="mt-1 text-xs text-slate-400 text-right">{additionalComment.length}/500</p>
+            </div>
+
+            <button
+              onClick={handleAdditionalMoneySubmit}
+              disabled={isSubmitting}
+              className="w-full bg-orange-500 hover:bg-orange-600 disabled:bg-orange-300 text-white font-semibold rounded-lg py-3.5 flex items-center justify-center gap-2 transition-colors"
+            >
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  Envoi en cours...
+                </>
+              ) : (
+                'Envoyer ma demande'
+              )}
+            </button>
+
+            <p className="text-xs text-slate-500 text-center">
+              Votre demande sera etudiee par l'equipe Wallfin qui vous recontactera dans les plus brefs delais.
+            </p>
           </div>
         </div>
 
