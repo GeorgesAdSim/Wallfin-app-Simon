@@ -1,3 +1,9 @@
+import { useEffect } from 'react';
+import { Capacitor } from '@capacitor/core';
+import { SplashScreen } from '@capacitor/splash-screen';
+import { StatusBar, Style } from '@capacitor/status-bar';
+import { App as CapacitorApp } from '@capacitor/app';
+import { Keyboard } from '@capacitor/keyboard';
 import { AppProvider, useApp } from './context/AppContext';
 import { Login } from './components/Auth/Login';
 import { Register } from './components/Auth/Register';
@@ -10,6 +16,7 @@ import { SimpleCreditDetail } from './components/Credits/SimpleCreditDetail';
 import { GlobalReport } from './components/Reports/GlobalReport';
 import { AppLayout } from './components/Layout/AppLayout';
 import { InstallBanner } from './components/PWA/InstallBanner';
+import { notificationService } from './services/NotificationService';
 
 function AppContent() {
   const { currentView, isAuthenticated } = useApp();
@@ -50,6 +57,60 @@ function AppContent() {
 }
 
 function App() {
+  useEffect(() => {
+    const initializeApp = async () => {
+      const isNative = Capacitor.isNativePlatform();
+
+      if (isNative) {
+        try {
+          await StatusBar.setStyle({ style: Style.Light });
+          await StatusBar.setBackgroundColor({ color: '#f97316' });
+        } catch (error) {
+          console.warn('StatusBar not available:', error);
+        }
+
+        try {
+          await SplashScreen.hide();
+        } catch (error) {
+          console.warn('SplashScreen not available:', error);
+        }
+
+        try {
+          await Keyboard.setAccessoryBarVisible({ isVisible: true });
+        } catch (error) {
+          console.warn('Keyboard not available:', error);
+        }
+
+        CapacitorApp.addListener('appStateChange', ({ isActive }) => {
+          console.log('App state changed. Is active:', isActive);
+        });
+
+        CapacitorApp.addListener('backButton', ({ canGoBack }) => {
+          if (!canGoBack) {
+            CapacitorApp.exitApp();
+          } else {
+            window.history.back();
+          }
+        });
+      }
+
+      try {
+        await notificationService.initialize();
+        console.log('Notification service initialized');
+      } catch (error) {
+        console.error('Error initializing notifications:', error);
+      }
+    };
+
+    initializeApp();
+
+    return () => {
+      if (Capacitor.isNativePlatform()) {
+        CapacitorApp.removeAllListeners();
+      }
+    };
+  }, []);
+
   return (
     <AppProvider>
       <AppContent />
