@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Wallfin</string>
+    <string name="title_activity_main">Wallfin</string>
+    <string name="package_name">com.adsim.wallfin</string>
+    <string name="custom_url_scheme">com.adsim.wallfin</string>
+</resources>
