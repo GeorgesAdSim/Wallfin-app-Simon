@@ -1,27 +1,31 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.adsim.wallfin',
+  appId: 'com.wallfin.client',
   appName: 'Wallfin',
   webDir: 'dist',
   server: {
     androidScheme: 'https',
     iosScheme: 'https',
+    cleartext: true,
   },
   plugins: {
     SplashScreen: {
       launchShowDuration: 2000,
-      backgroundColor: '#f97316',
+      backgroundColor: '#FF9500',
       showSpinner: false,
       androidSpinnerStyle: 'small',
       iosSpinnerStyle: 'small',
+      androidSplashResourceName: 'splash',
+      iosSplashResourceName: 'Splash',
     },
     PushNotifications: {
       presentationOptions: ['badge', 'sound', 'alert'],
     },
     LocalNotifications: {
       smallIcon: 'ic_stat_icon_config_sample',
-      iconColor: '#f97316',
+      iconColor: '#FF9500',
+      sound: 'beep.wav',
     },
     Keyboard: {
       resize: 'body',
@@ -30,7 +34,11 @@ const config: CapacitorConfig = {
     },
     StatusBar: {
       style: 'light',
-      backgroundColor: '#f97316',
+      backgroundColor: '#FF9500',
+    },
+    Haptics: {},
+    App: {
+      overrideUserInterfaceStyle: 'light',
     },
   },
 };

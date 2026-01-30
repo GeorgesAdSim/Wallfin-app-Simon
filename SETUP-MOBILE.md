@@ -4,9 +4,10 @@ Ce guide explique comment configurer et lancer l'application Wallfin sur iOS et 
 
 ## Configuration Capacitor
 
-**App ID**: `com.adsim.wallfin`
+**App ID**: `com.wallfin.client`
 **App Name**: Wallfin
 **Web Directory**: dist
+**Theme Color**: #FF9500 (Orange)
 
 ## Prerequisites
 
@@ -127,7 +128,7 @@ npm run android:sync
 
 3. **Configuration des Notifications Push** (optionnel):
    - Creer un projet Firebase: https://console.firebase.google.com
-   - Ajouter une app Android avec le package `com.adsim.wallfin`
+   - Ajouter une app Android avec le package `com.wallfin.client`
    - Telecharger le fichier `google-services.json`
    - Placer le fichier dans `android/app/`
    - Le fichier sera automatiquement configure
@@ -171,6 +172,48 @@ Les plugins suivants sont configures et prets a l'emploi:
 - **@capacitor/local-notifications** - Notifications locales
 - **@capacitor/splash-screen** - Ecran de demarrage
 - **@capacitor/status-bar** - Personnalisation de la barre de statut
+- **@capacitor/haptics** - Retour haptique (vibrations)
+
+## Hook useCapacitorNotifications
+
+Un hook React personnalisé est disponible pour simplifier l'utilisation des notifications:
+
+```typescript
+import { useCapacitorNotifications } from './hooks/useCapacitorNotifications';
+
+function MonComposant() {
+  const {
+    isNative,              // true si app native, false si web
+    hasPermission,         // true si permission accordée
+    pushToken,            // Token FCM/APNs pour push serveur
+    requestPermissions,   // Demander la permission
+    sendLocalNotification, // Envoyer une notification locale
+    testNotification,     // Tester rapidement
+  } = useCapacitorNotifications();
+
+  // Demander la permission au montage
+  useEffect(() => {
+    if (isNative && !hasPermission) {
+      requestPermissions();
+    }
+  }, [isNative, hasPermission]);
+
+  // Envoyer une notification
+  const handleNotif = async () => {
+    await sendLocalNotification(
+      'Titre',
+      'Message de la notification'
+    );
+  };
+
+  return (
+    <div>
+      <button onClick={handleNotif}>Envoyer Notification</button>
+      <button onClick={testNotification}>Test Rapide</button>
+    </div>
+  );
+}
+```
 
 ## Configuration Personnalisee
 
@@ -180,11 +223,11 @@ Editer `capacitor.config.ts`:
 
 ```typescript
 SplashScreen: {
-  backgroundColor: '#f97316', // Couleur orange Wallfin
+  backgroundColor: '#FF9500', // Couleur orange Wallfin
   launchShowDuration: 2000,
 },
 StatusBar: {
-  backgroundColor: '#f97316', // Couleur orange Wallfin
+  backgroundColor: '#FF9500', // Couleur orange Wallfin
   style: 'light',
 },
 ```
