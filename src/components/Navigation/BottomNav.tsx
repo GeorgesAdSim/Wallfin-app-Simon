@@ -54,7 +54,7 @@ export function BottomNav() {
                 aria-current={isActive ? 'page' : undefined}
                 className={`relative flex flex-col items-center justify-center gap-1 min-w-[70px] min-h-[56px] px-3 py-2 rounded-xl transition-colors ${
                   isActive
-                    ? 'bg-[#FFF3E6]'
+                    ? 'bg-[#FFE8CC]'
                     : 'hover:bg-slate-50'
                 }`}
               >
@@ -62,7 +62,7 @@ export function BottomNav() {
                   <Icon
                     aria-hidden="true"
                     className={`w-6 h-6 ${
-                      isActive ? 'text-[#FF9500]' : 'text-slate-600'
+                      isActive ? 'text-[#F57C00]' : 'text-slate-600'
                     }`}
                   />
                   {item.badge !== undefined && item.badge > 0 && (
@@ -73,7 +73,7 @@ export function BottomNav() {
                 </div>
                 <span
                   className={`text-xs font-medium ${
-                    isActive ? 'text-[#FF9500]' : 'text-slate-600'
+                    isActive ? 'text-[#F57C00]' : 'text-slate-600'
                   }`}
                 >
                   {item.label}

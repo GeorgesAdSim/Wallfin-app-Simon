@@ -52,7 +52,7 @@
 @layer components {
   .skip-link {
     position: absolute;
-    background-color: #FF9500;
+    background-color: #F57C00;
     color: white;
     padding: 12px 24px;
     font-weight: bold;
@@ -142,7 +142,7 @@
 }
 
 *:focus {
-  outline: 3px solid #FF9500 !important;
+  outline: 3px solid #F57C00 !important;
   outline-offset: 2px !important;
 }
 
@@ -151,7 +151,7 @@
 }
 
 *:focus-visible {
-  outline: 3px solid #FF9500 !important;
+  outline: 3px solid #F57C00 !important;
   outline-offset: 2px !important;
 }
 

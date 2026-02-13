@@ -68,9 +68,11 @@ export function Login() {
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-3 mb-2">
-            <div className="w-12 h-12 bg-[#FF9500] rounded-xl flex items-center justify-center">
-              <span className="text-2xl font-bold text-white">W</span>
-            </div>
+            <img
+              src="/images_(3).png"
+              alt="Wallfin"
+              className="w-12 h-12 rounded-xl object-cover"
+            />
             <div className="text-left">
               <div className="text-2xl font-bold text-[#333]">Wallfin</div>
               <div className="text-sm text-[#666]">Espace Client</div>
@@ -106,7 +108,7 @@ export function Login() {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#FF9500] focus:border-transparent"
+                    className="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#F57C00] focus:border-transparent"
                     placeholder="jean.dupont@email.be"
                     required
                   />
@@ -116,7 +118,7 @@ export function Login() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full bg-[#FF9500] hover:bg-[#e68600] text-white font-medium py-3 rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-[#F57C00] hover:bg-[#E67100] text-white font-medium py-3 rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isLoading ? 'Envoi en cours...' : 'Se connecter'}
               </button>

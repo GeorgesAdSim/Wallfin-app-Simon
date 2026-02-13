@@ -221,7 +221,7 @@ export function Credits() {
 
   return (
     <div className="pb-20">
-      <div className="bg-[#FF9500] px-4 py-3 mb-6">
+      <div className="bg-[#F57C00] px-4 py-3 mb-6">
         <p className="text-white text-sm text-center font-medium">
           Mode démonstration - Données fictives à titre indicatif uniquement
         </p>
@@ -234,7 +234,7 @@ export function Credits() {
 
         <button
           onClick={handleNewCredit}
-          className="w-full bg-[#FF9500] hover:bg-[#e68600] text-white rounded-xl p-4 flex items-center justify-center gap-3 mb-8 transition-colors"
+          className="w-full bg-[#F57C00] hover:bg-[#E67100] text-white rounded-xl p-4 flex items-center justify-center gap-3 mb-8 transition-colors"
         >
           <Plus className="w-5 h-5" />
           <div className="text-left">
@@ -246,7 +246,7 @@ export function Credits() {
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-bold text-[#333]">Mes crédits en cours</h2>
           {credits.length > 3 && (
-            <button className="text-sm text-[#FF9500] hover:text-[#e68600] font-medium">
+            <button className="text-sm text-[#F57C00] hover:text-[#E67100] font-medium">
               Voir tout
             </button>
           )}
@@ -268,12 +268,12 @@ export function Credits() {
                     <div className="flex-1 min-w-0">
                       <div className="text-white font-semibold mb-1">{credit.type}</div>
                       <div className="text-sm text-slate-400 mb-2">{credit.reference_number}</div>
-                      <div className="font-semibold mb-2 text-[#FF9500] text-xs">
+                      <div className="font-semibold mb-2 text-[#F57C00] text-xs">
                         {percentage}% remboursé
                       </div>
                       <div className="w-full h-2 rounded overflow-hidden bg-gray-700">
                         <div
-                          className="h-full rounded transition-all duration-500 ease-out bg-[#FF9500]"
+                          className="h-full rounded transition-all duration-500 ease-out bg-[#F57C00]"
                           style={{ width: `${percentage}%` }}
                         />
                       </div>
@@ -288,7 +288,7 @@ export function Credits() {
                     className="w-full flex items-center justify-between py-2 px-3 bg-[#242f3f] hover:bg-[#2a3644] rounded-lg transition-colors"
                   >
                     <div className="flex items-center gap-2">
-                      <RefreshCcw className="w-4 h-4 text-[#FF9500]" />
+                      <RefreshCcw className="w-4 h-4 text-[#F57C00]" />
                       <span className="text-sm text-slate-300">Remboursement anticipé</span>
                     </div>
                     <ChevronDown className={`w-4 h-4 text-slate-400 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
