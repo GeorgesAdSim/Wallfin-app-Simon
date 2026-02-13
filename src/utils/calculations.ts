@@ -177,6 +177,7 @@ export function generateRequestNumber(): string {
 
 export const CREDIT_TYPES = [
   { value: 'pret_personnel', label: 'Pret Personnel' },
+  { value: 'credit_personnel', label: 'Credit Personnel' },
   { value: 'credit_auto', label: 'Credit Auto' },
   { value: 'pret_travaux', label: 'Pret Travaux' },
   { value: 'credit_energie', label: 'Credit Energie' },

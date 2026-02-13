@@ -11,7 +11,7 @@ export interface Message {
   type: MessageType;
 }
 
-export type CreditType = 'Crédit Auto' | 'Prêt Travaux' | 'Crédit Énergie' | 'Prêt Personnel' | 'Prêt Vacances';
+export type CreditType = 'Crédit Auto' | 'Prêt Travaux' | 'Crédit Énergie' | 'Prêt Personnel' | 'Prêt Vacances' | 'Crédit Personnel' | 'Regroupement de Crédit';
 
 export type CreditStatus = 'en_cours' | 'en_attente' | 'solde';
 

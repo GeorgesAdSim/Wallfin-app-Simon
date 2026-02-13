@@ -1,5 +1,5 @@
 export type Gender = 'M' | 'F' | 'Autre';
-export type CreditType = 'personnel' | 'auto' | 'immobilier' | 'travaux' | 'consommation';
+export type CreditType = 'personnel' | 'auto' | 'immobilier' | 'travaux' | 'consommation' | 'regroupement';
 export type CreditStatus = 'active' | 'completed' | 'suspended';
 export type MensualiteStatus = 'paid' | 'pending' | 'overdue';
 export type RequestType = 'information' | 'settlement' | 'new_credit';
