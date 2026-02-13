@@ -22,6 +22,8 @@ export interface Client {
   last_name: string;
   phone: string;
   address?: string;
+  birth_date?: string;
+  gender?: string;
   created_at: string;
   updated_at: string;
 }

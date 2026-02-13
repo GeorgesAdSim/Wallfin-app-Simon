@@ -7,6 +7,8 @@ export const mockClient: Client = {
   last_name: 'Dupont',
   phone: '+32 470 12 34 56',
   address: 'Rue de la Paix 123, 4000 Liège',
+  birth_date: '1985-06-15',
+  gender: 'M',
   created_at: '2023-01-15T10:00:00Z',
   updated_at: '2024-01-10T14:30:00Z',
 };

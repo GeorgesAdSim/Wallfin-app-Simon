@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from 'react';
 import type { ViewType, Client, Credit, Message } from '../types';
 import type { Profile } from '../types/database';
-import { mockCredits } from '../data/mockData';
+import { mockCredits, mockMessages, mockClient } from '../data/mockData';
 import { supabase } from '../lib/supabase';
 
 interface AppContextType {
@@ -25,14 +25,14 @@ interface AppContextType {
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export function AppProvider({ children }: { children: ReactNode }) {
-  const [currentView, setCurrentView] = useState<ViewType>('login');
+  const [currentView, setCurrentView] = useState<ViewType>('credits');
   const [selectedCreditId, setSelectedCreditId] = useState<string | null>(null);
   const [selectedMessageId, setSelectedMessageId] = useState<string | null>(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
   const [isDemo] = useState(true);
-  const [client, setClient] = useState<Client | null>(null);
+  const [client, setClient] = useState<Client | null>(mockClient);
   const [credits] = useState<Credit[]>(mockCredits);
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<Message[]>(mockMessages);
   const [isLoadingMessages, setIsLoadingMessages] = useState(false);
 
   const unreadMessagesCount = messages.filter((m) => !m.is_read).length;
@@ -81,7 +81,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         return;
       }
 
-      if (data) {
+      if (data && data.length > 0) {
         console.log('✅ [DEBUG] Messages fetched successfully:', data.length, 'messages');
         const convertedMessages: Message[] = data.map((msg) => ({
           id: msg.id,
@@ -93,8 +93,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
         }));
         setMessages(convertedMessages);
       } else {
-        console.warn('⚠️ [DEBUG] No data returned from query');
-        setMessages([]);
+        console.warn('⚠️ [DEBUG] No messages from Supabase, using demo messages');
+        setMessages(mockMessages);
       }
     } catch (err) {
       console.error('❌ [DEBUG] Exception during fetch:', err);
@@ -175,13 +175,15 @@ export function AppProvider({ children }: { children: ReactNode }) {
       const profile = await fetchUserProfile();
       if (profile) {
         setClient(profile);
+      } else {
+        setClient(mockClient);
       }
       setCurrentView('credits');
       fetchMessages();
     } else {
-      setClient(null);
+      setClient(mockClient);
       setCurrentView('login');
-      setMessages([]);
+      setMessages(mockMessages);
     }
   }, [fetchMessages, fetchUserProfile]);
 
@@ -225,35 +227,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
-  useEffect(() => {
-    if (isAuthenticated) {
-      console.log('🔄 [DEBUG] User authenticated, fetching messages...');
-      fetchMessages();
-    }
-  }, [isAuthenticated, fetchMessages]);
 
   useEffect(() => {
-    console.log('🚀 [DEBUG] App starting, checking for existing session...');
-
-    const checkSession = async () => {
-      const { data: { session }, error } = await supabase.auth.getSession();
-
-      console.log('🔐 [DEBUG] Session check:', {
-        hasSession: !!session,
-        userId: session?.user?.id,
-        userEmail: session?.user?.email,
-        error: error
-      });
-
-      if (session?.user) {
-        console.log('✅ [DEBUG] Found existing session, auto-authenticating...');
-        setAuthenticated(true);
-      } else {
-        console.log('ℹ️ [DEBUG] No existing session found');
-      }
-    };
-
-    checkSession();
+    console.log('🚀 [DEBUG] App starting...');
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       console.log('🔄 [DEBUG] Auth state changed:', event, session?.user?.id);
@@ -261,14 +237,17 @@ export function AppProvider({ children }: { children: ReactNode }) {
       if (event === 'SIGNED_IN' && session?.user) {
         setAuthenticated(true);
       } else if (event === 'SIGNED_OUT') {
-        setAuthenticated(false);
+        setIsAuthenticated(false);
+        setClient(mockClient);
+        setMessages(mockMessages);
+        setCurrentView('credits');
       }
     });
 
     return () => {
       subscription.unsubscribe();
     };
-  }, []);
+  }, [setAuthenticated]);
 
   return (
     <AppContext.Provider
