@@ -4,6 +4,7 @@ export type CreditStatus = 'active' | 'completed' | 'suspended';
 export type MensualiteStatus = 'paid' | 'pending' | 'overdue';
 export type RequestType = 'information' | 'settlement' | 'new_credit';
 export type RequestStatus = 'pending' | 'in_progress' | 'completed';
+export type MessageType = 'paiement' | 'info' | 'rappel';
 
 export interface Client {
   id: string;
@@ -63,6 +64,17 @@ export interface Request {
   updated_at: string;
 }
 
+export interface InboxMessage {
+  id: string;
+  user_id: string;
+  titre: string;
+  contenu: string;
+  date: string;
+  lu: boolean;
+  type: MessageType;
+  created_at: string;
+}
+
 export interface Database {
   public: {
     Tables: {
@@ -85,6 +97,11 @@ export interface Database {
         Row: Request;
         Insert: Omit<Request, 'id' | 'created_at' | 'updated_at' | 'status' | 'response'>;
         Update: Partial<Omit<Request, 'id' | 'created_at'>>;
+      };
+      inbox_messages: {
+        Row: InboxMessage;
+        Insert: Omit<InboxMessage, 'id' | 'created_at'>;
+        Update: Partial<Omit<InboxMessage, 'id' | 'user_id' | 'created_at'>>;
       };
     };
   };

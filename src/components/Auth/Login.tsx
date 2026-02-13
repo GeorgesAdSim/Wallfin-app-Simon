@@ -1,20 +1,50 @@
 import { useState } from 'react';
 import { useApp } from '../../context/AppContext';
+import { supabase } from '../../lib/supabase';
 
 export function Login() {
   const { navigateTo, setAuthenticated } = useApp();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    setError('');
 
-    setTimeout(() => {
-      setAuthenticated(true);
+    console.log('🔐 [DEBUG] Login attempt with email:', email);
+
+    try {
+      const { data, error: authError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      console.log('🔐 [DEBUG] Login response:', {
+        user: data.user,
+        session: data.session,
+        error: authError
+      });
+
+      if (authError) {
+        console.error('❌ [DEBUG] Login error:', authError);
+        setError('Email ou mot de passe incorrect');
+        setIsLoading(false);
+        return;
+      }
+
+      if (data.user) {
+        console.log('✅ [DEBUG] Login successful! User ID:', data.user.id);
+        setAuthenticated(true);
+      }
+    } catch (err) {
+      console.error('❌ [DEBUG] Login exception:', err);
+      setError('Une erreur est survenue lors de la connexion');
+    } finally {
       setIsLoading(false);
-    }, 800);
+    }
   };
 
   return (
@@ -40,6 +70,12 @@ export function Login() {
           </h1>
 
           <form onSubmit={handleSubmit} className="space-y-4">
+            {error && (
+              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
+                {error}
+              </div>
+            )}
+
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-slate-700 mb-2">
                 Email
