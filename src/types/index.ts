@@ -1,4 +1,4 @@
-export type ViewType = 'login' | 'register' | 'accueil' | 'credits' | 'messages' | 'message-detail' | 'demandes' | 'credit-detail' | 'global-report';
+export type ViewType = 'login' | 'register' | 'accueil' | 'credits' | 'messages' | 'message-detail' | 'demandes' | 'credit-detail' | 'global-report' | 'profile';
 
 export type MessageType = 'paiement' | 'info' | 'rappel';
 

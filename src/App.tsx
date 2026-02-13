@@ -7,7 +7,7 @@ import { Keyboard } from '@capacitor/keyboard';
 import { AppProvider, useApp } from './context/AppContext';
 import { Login } from './components/Auth/Login';
 import { Register } from './components/Auth/Register';
-import { Accueil } from './components/Home/Accueil';
+import { Profile } from './components/Profile/Profile';
 import { Credits } from './components/Dashboard/Credits';
 import { Messages } from './components/Messages/Messages';
 import { MessageDetail } from './components/Messages/MessageDetail';
@@ -25,13 +25,13 @@ function AppContent() {
     return currentView === 'register' ? <Register /> : <Login />;
   }
 
-  const showBottomNav = ['accueil', 'credits', 'messages', 'demandes'].includes(currentView);
+  const showBottomNav = ['profile', 'credits', 'messages', 'demandes'].includes(currentView);
   const showHeader = !['credit-detail', 'message-detail', 'global-report'].includes(currentView);
 
   const renderView = () => {
     switch (currentView) {
-      case 'accueil':
-        return <Accueil />;
+      case 'profile':
+        return <div className="px-4 py-6 pb-24"><Profile /></div>;
       case 'credits':
         return <Credits />;
       case 'messages':

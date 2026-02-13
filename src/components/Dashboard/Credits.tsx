@@ -220,27 +220,33 @@ export function Credits() {
   };
 
   return (
-    <div className="pb-20 px-4 py-6">
-      <h1 className="text-2xl font-bold text-slate-900 mb-6">
-        Bonjour, {client.first_name} {client.last_name}
-      </h1>
+    <div className="pb-20">
+      <div className="bg-[#FF9500] px-4 py-3 mb-6">
+        <p className="text-white text-sm text-center font-medium">
+          Mode démonstration - Données fictives à titre indicatif uniquement
+        </p>
+      </div>
 
-      <button
-        onClick={handleNewCredit}
-        className="w-full bg-orange-500 hover:bg-orange-600 text-white rounded-xl p-4 flex items-center justify-center gap-3 mb-8 transition-colors"
-      >
-        <Plus className="w-5 h-5" />
-        <div className="text-left">
-          <div className="font-semibold">Nouveau credit</div>
-          <div className="text-sm opacity-90">Faire une demande</div>
-        </div>
-      </button>
+      <div className="px-4">
+        <h1 className="text-2xl font-bold text-[#333] mb-6">
+          Bonjour, {client.first_name} {client.last_name}
+        </h1>
 
-      <div>
+        <button
+          onClick={handleNewCredit}
+          className="w-full bg-[#FF9500] hover:bg-[#e68600] text-white rounded-xl p-4 flex items-center justify-center gap-3 mb-8 transition-colors"
+        >
+          <Plus className="w-5 h-5" />
+          <div className="text-left">
+            <div className="font-semibold">Nouveau crédit</div>
+            <div className="text-sm opacity-90">Faire une demande</div>
+          </div>
+        </button>
+
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-bold text-slate-900">Mes credits en cours</h2>
+          <h2 className="text-xl font-bold text-[#333]">Mes crédits en cours</h2>
           {credits.length > 3 && (
-            <button className="text-sm text-orange-500 hover:text-orange-600 font-medium">
+            <button className="text-sm text-[#FF9500] hover:text-[#e68600] font-medium">
               Voir tout
             </button>
           )}
@@ -252,47 +258,38 @@ export function Credits() {
             const isExpanded = expandedCreditId === credit.id;
 
             return (
-              <div key={credit.id} className="bg-slate-800 rounded-xl overflow-hidden">
+              <div key={credit.id} className="bg-[#1a2332] rounded-2xl overflow-hidden">
                 <button
                   onClick={() => navigateTo('credit-detail', credit.id)}
-                  className="w-full hover:bg-slate-700 p-4 flex items-center justify-between transition-colors text-left"
+                  className="w-full hover:bg-[#1e2838] p-4 flex items-center justify-between transition-colors text-left"
                 >
                   <div className="flex items-center gap-4 flex-1 min-w-0">
                     <div className="text-3xl flex-shrink-0">{creditTypeIcons[credit.type] || ''}</div>
                     <div className="flex-1 min-w-0">
                       <div className="text-white font-semibold mb-1">{credit.type}</div>
                       <div className="text-sm text-slate-400 mb-2">{credit.reference_number}</div>
-                      <div
-                        className="font-semibold mb-2"
-                        style={{ fontSize: '12px', color: '#22C55E' }}
-                      >
-                        {percentage}% rembourse
+                      <div className="font-semibold mb-2 text-[#FF9500] text-xs">
+                        {percentage}% remboursé
                       </div>
-                      <div
-                        className="w-full h-2 rounded overflow-hidden"
-                        style={{ backgroundColor: 'rgba(255, 255, 255, 0.2)' }}
-                      >
+                      <div className="w-full h-2 rounded overflow-hidden bg-gray-700">
                         <div
-                          className="h-full rounded transition-all duration-500 ease-out"
-                          style={{
-                            width: `${percentage}%`,
-                            background: 'linear-gradient(90deg, #F97316, #FB923C)',
-                          }}
+                          className="h-full rounded transition-all duration-500 ease-out bg-[#FF9500]"
+                          style={{ width: `${percentage}%` }}
                         />
                       </div>
                     </div>
                   </div>
-                  <ChevronRight className="w-5 h-5 text-slate-400 flex-shrink-0 ml-3" />
+                  <ChevronRight className="w-5 h-5 text-white flex-shrink-0 ml-3" />
                 </button>
 
                 <div className="px-4 pb-3">
                   <button
                     onClick={(e) => toggleEarlyRepayment(credit.id, e)}
-                    className="w-full flex items-center justify-between py-2 px-3 bg-slate-700/50 hover:bg-slate-700 rounded-lg transition-colors"
+                    className="w-full flex items-center justify-between py-2 px-3 bg-[#242f3f] hover:bg-[#2a3644] rounded-lg transition-colors"
                   >
                     <div className="flex items-center gap-2">
-                      <RefreshCcw className="w-4 h-4 text-orange-400" />
-                      <span className="text-sm text-slate-300">Remboursement anticipe</span>
+                      <RefreshCcw className="w-4 h-4 text-[#FF9500]" />
+                      <span className="text-sm text-slate-300">Remboursement anticipé</span>
                     </div>
                     <ChevronDown className={`w-4 h-4 text-slate-400 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
                   </button>
@@ -408,132 +405,6 @@ export function Credits() {
           })}
         </div>
       </div>
-
-      <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 mt-6">
-        <p className="text-amber-800 text-xs leading-relaxed text-center">
-          Les montants affiches sont donnes a titre indicatif et peuvent differer des montants reels. Pour toute information officielle, contactez Wallfin au +32 4 228 19 42.
-        </p>
-      </div>
-
-      {credits.length > 0 && (
-        <div className="mt-6 bg-white rounded-xl border border-slate-200 p-5">
-          <div className="flex items-center gap-2 mb-2">
-            <Plus className="w-5 h-5 text-orange-500" />
-            <h3 className="font-bold text-slate-900">Demande d'argent supplementaire</h3>
-          </div>
-          <p className="text-sm text-slate-500 mb-4">Besoin d'un montant supplementaire sur un de vos credits ?</p>
-
-          {showSuccess && (
-            <div className="bg-green-50 border border-green-200 rounded-lg p-3 mb-4 flex items-start gap-2">
-              <CheckCircle className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
-              <div>
-                <div className="font-medium text-green-900 text-sm">Demande envoyee</div>
-                <div className="text-green-700 text-xs">L'equipe Wallfin vous recontactera rapidement.</div>
-              </div>
-            </div>
-          )}
-
-          {showError && (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-3 mb-4 flex items-start gap-2">
-              <XCircle className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" />
-              <div>
-                <div className="font-medium text-red-900 text-sm">Erreur</div>
-                <div className="text-red-700 text-xs">Veuillez reessayer ou appelez le +32 4 228 19 42</div>
-              </div>
-            </div>
-          )}
-
-          <form onSubmit={handleAdditionalMoneyRequest} className="space-y-4">
-            <div>
-              <label htmlFor="creditSelect" className="block text-sm font-medium text-slate-600 mb-1.5">
-                Credit concerne *
-              </label>
-              <select
-                id="creditSelect"
-                value={selectedCreditId}
-                onChange={(e) => setSelectedCreditId(e.target.value)}
-                className="w-full px-4 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                style={{ height: '48px', fontSize: '16px', color: selectedCreditId ? '#1e293b' : '#6B7280' }}
-                required
-              >
-                <option value="" style={{ color: '#6B7280' }}>Selectionnez un credit</option>
-                {credits.map((credit) => (
-                  <option key={credit.id} value={credit.id} style={{ color: '#1e293b' }}>
-                    {credit.type} - {credit.reference_number}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label htmlFor="amountInput" className="block text-sm font-medium text-slate-600 mb-1.5">
-                Montant supplementaire souhaite *
-              </label>
-              <div className="relative">
-                <input
-                  type="number"
-                  id="amountInput"
-                  value={additionalAmount}
-                  onChange={(e) => {
-                    setAdditionalAmount(e.target.value);
-                    if (amountError) setAmountError('');
-                  }}
-                  placeholder="Ex: 2000"
-                  min="500"
-                  max="50000"
-                  className={`w-full px-4 pr-14 rounded-lg border focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
-                    amountError ? 'border-red-400' : 'border-slate-300'
-                  }`}
-                  style={{ height: '48px', fontSize: '16px' }}
-                  required
-                />
-                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 font-medium">EUR</span>
-              </div>
-              {amountError && <p className="mt-1.5 text-sm text-red-600">{amountError}</p>}
-              <p className="mt-1 text-xs text-slate-400">Minimum 500 EUR - Maximum 50 000 EUR</p>
-            </div>
-
-            <div>
-              <label htmlFor="commentInput" className="block text-sm font-medium text-slate-600 mb-1.5">
-                Commentaire (facultatif)
-              </label>
-              <textarea
-                id="commentInput"
-                value={comment}
-                onChange={(e) => setComment(e.target.value.slice(0, 500))}
-                rows={3}
-                className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent resize-none placeholder-slate-400"
-                placeholder="Decrivez votre besoin ou ajoutez des precisions..."
-                style={{ fontSize: '16px' }}
-              />
-              <p className="mt-1 text-xs text-slate-400 text-right">{comment.length}/500</p>
-            </div>
-
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="w-full bg-orange-500 hover:bg-orange-600 text-white rounded-xl flex items-center justify-center gap-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-semibold"
-              style={{ height: '52px', fontSize: '16px' }}
-            >
-              {isLoading ? (
-                <>
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                  Envoi en cours...
-                </>
-              ) : (
-                <>
-                  <Send className="w-5 h-5" />
-                  Envoyer ma demande
-                </>
-              )}
-            </button>
-
-            <p className="text-xs text-slate-500 text-center">
-              Votre demande sera etudiee par l'equipe Wallfin qui vous recontactera dans les plus brefs delais.
-            </p>
-          </form>
-        </div>
-      )}
     </div>
   );
 }

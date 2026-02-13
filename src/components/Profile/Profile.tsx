@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { User, Mail, Phone, MapPin, Calendar, Shield, LogOut, ChevronRight, X, Check } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
+import { supabase } from '../../lib/supabase';
 import { formatDate } from '../../utils/format';
 
 export function Profile() {
@@ -28,7 +29,8 @@ export function Profile() {
     { icon: Shield, label: 'Sexe', value: client.gender === 'M' ? 'Homme' : client.gender === 'F' ? 'Femme' : 'Non renseigne' },
   ];
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
     setAuthenticated(false);
   };
 

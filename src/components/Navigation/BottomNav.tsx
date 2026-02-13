@@ -7,14 +7,14 @@ export function BottomNav() {
 
   const navItems = [
     {
-      id: 'accueil' as ViewType,
+      id: 'profile' as ViewType,
       label: 'Profile',
       icon: User,
       ariaLabel: 'Voir mon profil',
     },
     {
       id: 'credits' as ViewType,
-      label: 'Credits',
+      label: 'Crédits',
       icon: CreditCard,
       ariaLabel: 'Voir mes credits',
     },
@@ -54,15 +54,15 @@ export function BottomNav() {
                 aria-current={isActive ? 'page' : undefined}
                 className={`relative flex flex-col items-center justify-center gap-1 min-w-[70px] min-h-[56px] px-3 py-2 rounded-xl transition-colors ${
                   isActive
-                    ? 'bg-orange-50 border-2 border-orange-500'
-                    : 'border-2 border-transparent hover:bg-slate-50'
+                    ? 'bg-[#FFF3E6]'
+                    : 'hover:bg-slate-50'
                 }`}
               >
                 <div className="relative">
                   <Icon
                     aria-hidden="true"
                     className={`w-6 h-6 ${
-                      isActive ? 'text-orange-500' : 'text-slate-600'
+                      isActive ? 'text-[#FF9500]' : 'text-slate-600'
                     }`}
                   />
                   {item.badge !== undefined && item.badge > 0 && (
@@ -73,7 +73,7 @@ export function BottomNav() {
                 </div>
                 <span
                   className={`text-xs font-medium ${
-                    isActive ? 'text-orange-500' : 'text-slate-600'
+                    isActive ? 'text-[#FF9500]' : 'text-slate-600'
                   }`}
                 >
                   {item.label}
