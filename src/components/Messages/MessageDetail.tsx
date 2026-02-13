@@ -8,7 +8,7 @@ export function MessageDetail() {
   const message = selectedMessageId ? getMessageById(selectedMessageId) : null;
 
   useEffect(() => {
-    if (message && !message.lu) {
+    if (message && !message.is_read) {
       markMessageAsRead(message.id);
     }
   }, [message, markMessageAsRead]);
@@ -53,7 +53,7 @@ export function MessageDetail() {
 
       <div className="px-4 py-6">
         <div className="bg-white rounded-2xl p-5 shadow-sm mb-4">
-          <p className="text-sm text-slate-500 mb-3">{formatFullDate(message.date)}</p>
+          <p className="text-sm text-slate-500 mb-3">{formatFullDate(message.created_at)}</p>
           <h2 className="text-xl font-bold text-slate-900 mb-4">{message.titre}</h2>
           <div className="border-t border-slate-100 pt-4">
             <p className="text-slate-700 whitespace-pre-line leading-relaxed">

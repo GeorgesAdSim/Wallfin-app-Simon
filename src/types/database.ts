@@ -69,10 +69,21 @@ export interface InboxMessage {
   user_id: string;
   titre: string;
   contenu: string;
-  date: string;
-  lu: boolean;
-  type: MessageType;
+  is_read: boolean;
   created_at: string;
+}
+
+export interface Profile {
+  id: string;
+  email: string;
+  name: string;
+  role: 'admin' | 'manager' | 'viewer';
+  avatar_url: string | null;
+  phone: string | null;
+  is_active: boolean;
+  last_login_at: string | null;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface Database {

@@ -6,9 +6,9 @@ export interface Message {
   id: string;
   titre: string;
   contenu: string;
-  date: string;
-  lu: boolean;
-  type: MessageType;
+  created_at: string;
+  is_read: boolean;
+  type?: MessageType;
 }
 
 export type CreditType = 'Crédit Auto' | 'Prêt Travaux' | 'Crédit Énergie' | 'Prêt Personnel' | 'Prêt Vacances' | 'Crédit Personnel' | 'Regroupement de Crédit';

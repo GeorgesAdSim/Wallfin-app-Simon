@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from 'react';
 import type { ViewType, Client, Credit, Message } from '../types';
-import { mockClient, mockCredits } from '../data/mockData';
+import type { Profile } from '../types/database';
+import { mockCredits } from '../data/mockData';
 import { supabase } from '../lib/supabase';
 
 interface AppContextType {
@@ -34,7 +35,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoadingMessages, setIsLoadingMessages] = useState(false);
 
-  const unreadMessagesCount = messages.filter((m) => !m.lu).length;
+  const unreadMessagesCount = messages.filter((m) => !m.is_read).length;
 
   const fetchMessages = useCallback(async () => {
     console.log('🔍 [DEBUG] Fetching messages from Supabase...');
@@ -66,7 +67,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         .from('inbox_messages')
         .select('*')
         .eq('user_id', user.id)
-        .order('date', { ascending: false });
+        .order('created_at', { ascending: false });
 
       console.log('📨 [DEBUG] Supabase response:', {
         data: data,
@@ -82,7 +83,15 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
       if (data) {
         console.log('✅ [DEBUG] Messages fetched successfully:', data.length, 'messages');
-        setMessages(data);
+        const convertedMessages: Message[] = data.map((msg) => ({
+          id: msg.id,
+          titre: msg.titre,
+          contenu: msg.contenu,
+          created_at: msg.created_at,
+          is_read: msg.is_read,
+          type: 'info'
+        }));
+        setMessages(convertedMessages);
       } else {
         console.warn('⚠️ [DEBUG] No data returned from query');
         setMessages([]);
@@ -108,10 +117,65 @@ export function AppProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  const setAuthenticated = useCallback((value: boolean) => {
+  const fetchUserProfile = useCallback(async () => {
+    console.log('👤 [DEBUG] Fetching user profile from database...');
+
+    try {
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+
+      if (userError || !user) {
+        console.error('❌ [DEBUG] Error getting user:', userError);
+        return null;
+      }
+
+      console.log('📡 [DEBUG] Fetching profile for user ID:', user.id);
+
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user.id)
+        .maybeSingle();
+
+      console.log('👤 [DEBUG] Profile response:', {
+        profile,
+        error: profileError
+      });
+
+      if (profileError) {
+        console.error('❌ [DEBUG] Error fetching profile:', profileError);
+        return null;
+      }
+
+      if (profile) {
+        const clientData: Client = {
+          id: profile.id,
+          email: profile.email,
+          first_name: profile.name.split(' ')[0] || profile.name,
+          last_name: profile.name.split(' ').slice(1).join(' ') || '',
+          phone: profile.phone || '',
+          address: '',
+          created_at: profile.created_at,
+          updated_at: profile.updated_at
+        };
+
+        console.log('✅ [DEBUG] Profile converted to client:', clientData);
+        return clientData;
+      }
+
+      return null;
+    } catch (err) {
+      console.error('❌ [DEBUG] Exception fetching profile:', err);
+      return null;
+    }
+  }, []);
+
+  const setAuthenticated = useCallback(async (value: boolean) => {
     setIsAuthenticated(value);
     if (value) {
-      setClient(mockClient);
+      const profile = await fetchUserProfile();
+      if (profile) {
+        setClient(profile);
+      }
       setCurrentView('credits');
       fetchMessages();
     } else {
@@ -119,7 +183,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       setCurrentView('login');
       setMessages([]);
     }
-  }, [fetchMessages]);
+  }, [fetchMessages, fetchUserProfile]);
 
   const getCreditById = useCallback((creditId: string) => {
     return credits.find((c) => c.id === creditId);
@@ -134,14 +198,14 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
     setMessages((prev) =>
       prev.map((msg) =>
-        msg.id === messageId ? { ...msg, lu: true } : msg
+        msg.id === messageId ? { ...msg, is_read: true } : msg
       )
     );
 
     try {
       const { error } = await supabase
         .from('inbox_messages')
-        .update({ lu: true })
+        .update({ is_read: true })
         .eq('id', messageId);
 
       if (error) {
