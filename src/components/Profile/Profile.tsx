@@ -3,9 +3,10 @@ import { User, Mail, Phone, MapPin, Calendar, Shield, LogOut, ChevronRight, X, C
 import { useApp } from '../../context/AppContext';
 import { supabase } from '../../lib/supabase';
 import { formatDate } from '../../utils/format';
+import { AdminMessages } from '../Admin/AdminMessages';
 
 export function Profile() {
-  const { client, setAuthenticated, updateClient } = useApp();
+  const { client, setAuthenticated, updateClient, userRole } = useApp();
   const [isEditing, setIsEditing] = useState(false);
   const [editData, setEditData] = useState({
     first_name: client?.first_name || '',
@@ -220,6 +221,12 @@ export function Profile() {
       <p className="text-xs text-gray-400 text-center">
         Derniere mise a jour : {formatDate(client.updated_at)}
       </p>
+
+      {userRole === 'admin' && (
+        <div className="mt-6">
+          <AdminMessages />
+        </div>
+      )}
     </div>
   );
 }

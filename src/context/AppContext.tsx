@@ -14,6 +14,7 @@ interface AppContextType {
   credits: Credit[];
   messages: Message[];
   unreadMessagesCount: number;
+  userRole: string | null;
   navigateTo: (view: ViewType, id?: string | null) => void;
   setAuthenticated: (value: boolean) => void;
   getCreditById: (creditId: string) => Credit | undefined;
@@ -34,6 +35,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [credits] = useState<Credit[]>(mockCredits);
   const [messages, setMessages] = useState<Message[]>(mockMessages);
   const [isLoadingMessages, setIsLoadingMessages] = useState(false);
+  const [userRole, setUserRole] = useState<string | null>(null);
 
   const unreadMessagesCount = messages.filter((m) => !m.is_read).length;
 
@@ -147,6 +149,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
       }
 
       if (profile) {
+        setUserRole(profile.role);
+
         const clientData: Client = {
           id: profile.id,
           email: profile.email,
@@ -261,6 +265,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         credits,
         messages,
         unreadMessagesCount,
+        userRole,
         navigateTo,
         setAuthenticated,
         getCreditById,
