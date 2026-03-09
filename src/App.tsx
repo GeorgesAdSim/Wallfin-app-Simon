@@ -19,7 +19,15 @@ import { InstallBanner } from './components/PWA/InstallBanner';
 import { notificationService } from './services/NotificationService';
 
 function AppContent() {
-  const { currentView, isAuthenticated } = useApp();
+  const { currentView, isAuthenticated, isLoading } = useApp();
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-[#f5f7fa] flex items-center justify-center">
+        <div className="w-10 h-10 border-3 border-orange-500 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   if (!isAuthenticated) {
     return currentView === 'register' ? <Register /> : <Login />;

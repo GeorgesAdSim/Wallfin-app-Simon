@@ -1,6 +1,5 @@
 import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from 'react';
 import type { ViewType, Client, Credit, Message } from '../types';
-import type { Profile } from '../types/database';
 import { mockCredits, mockMessages, mockClient } from '../data/mockData';
 import { supabase } from '../lib/supabase';
 
@@ -10,6 +9,7 @@ interface AppContextType {
   selectedMessageId: string | null;
   isAuthenticated: boolean;
   isDemo: boolean;
+  isLoading: boolean;
   client: Client | null;
   credits: Credit[];
   messages: Message[];
@@ -26,65 +26,32 @@ interface AppContextType {
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export function AppProvider({ children }: { children: ReactNode }) {
-  const [currentView, setCurrentView] = useState<ViewType>('credits');
+  const [currentView, setCurrentView] = useState<ViewType>('login');
   const [selectedCreditId, setSelectedCreditId] = useState<string | null>(null);
   const [selectedMessageId, setSelectedMessageId] = useState<string | null>(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
-  const [isDemo] = useState(true);
-  const [client, setClient] = useState<Client | null>(mockClient);
+  const [isAuthenticated, setIsAuthenticatedState] = useState(false);
+  const [isDemo, setIsDemo] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
+  const [client, setClient] = useState<Client | null>(null);
   const [credits] = useState<Credit[]>(mockCredits);
   const [messages, setMessages] = useState<Message[]>(mockMessages);
-  const [isLoadingMessages, setIsLoadingMessages] = useState(false);
   const [userRole, setUserRole] = useState<string | null>(null);
 
   const unreadMessagesCount = messages.filter((m) => !m.is_read).length;
 
-  const fetchMessages = useCallback(async () => {
-    console.log('🔍 [DEBUG] Fetching messages from Supabase...');
-
+  const fetchMessages = useCallback(async (userId: string) => {
     try {
-      const { data: { user }, error: userError } = await supabase.auth.getUser();
-
-      console.log('👤 [DEBUG] Current user:', {
-        id: user?.id,
-        email: user?.email,
-        error: userError
-      });
-
-      if (userError) {
-        console.error('❌ [DEBUG] Error getting user:', userError);
-        return;
-      }
-
-      if (!user) {
-        console.warn('⚠️ [DEBUG] No user authenticated');
-        return;
-      }
-
-      setIsLoadingMessages(true);
-
-      console.log('📡 [DEBUG] Executing query: SELECT * FROM inbox_messages WHERE user_id =', user.id);
-
       const { data, error } = await supabase
         .from('inbox_messages')
         .select('*')
-        .eq('user_id', user.id)
+        .eq('user_id', userId)
         .order('created_at', { ascending: false });
 
-      console.log('📨 [DEBUG] Supabase response:', {
-        data: data,
-        dataLength: data?.length,
-        error: error,
-        errorDetails: error ? JSON.stringify(error) : null
-      });
-
       if (error) {
-        console.error('❌ [DEBUG] Error fetching messages:', error);
         return;
       }
 
       if (data && data.length > 0) {
-        console.log('✅ [DEBUG] Messages fetched successfully:', data.length, 'messages');
         const convertedMessages: Message[] = data.map((msg) => ({
           id: msg.id,
           titre: msg.titre,
@@ -95,13 +62,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
         }));
         setMessages(convertedMessages);
       } else {
-        console.warn('⚠️ [DEBUG] No messages from Supabase, using demo messages');
         setMessages(mockMessages);
       }
-    } catch (err) {
-      console.error('❌ [DEBUG] Exception during fetch:', err);
-    } finally {
-      setIsLoadingMessages(false);
+    } catch {
+      // keep existing messages on error
     }
   }, []);
 
@@ -119,77 +83,70 @@ export function AppProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  const fetchUserProfile = useCallback(async () => {
-    console.log('👤 [DEBUG] Fetching user profile from database...');
-
+  const fetchUserProfile = useCallback(async (userId: string) => {
     try {
-      const { data: { user }, error: userError } = await supabase.auth.getUser();
-
-      if (userError || !user) {
-        console.error('❌ [DEBUG] Error getting user:', userError);
-        return null;
-      }
-
-      console.log('📡 [DEBUG] Fetching profile for user ID:', user.id);
-
       const { data: profile, error: profileError } = await supabase
         .from('profiles')
         .select('*')
-        .eq('id', user.id)
+        .eq('id', userId)
         .maybeSingle();
 
-      console.log('👤 [DEBUG] Profile response:', {
-        profile,
-        error: profileError
-      });
-
-      if (profileError) {
-        console.error('❌ [DEBUG] Error fetching profile:', profileError);
+      if (profileError || !profile) {
         return null;
       }
 
-      if (profile) {
-        setUserRole(profile.role);
+      setUserRole(profile.role);
 
-        const clientData: Client = {
-          id: profile.id,
-          email: profile.email,
-          first_name: profile.name.split(' ')[0] || profile.name,
-          last_name: profile.name.split(' ').slice(1).join(' ') || '',
-          phone: profile.phone || '',
-          address: '',
-          created_at: profile.created_at,
-          updated_at: profile.updated_at
-        };
+      const clientData: Client = {
+        id: profile.id,
+        email: profile.email,
+        first_name: profile.name.split(' ')[0] || profile.name,
+        last_name: profile.name.split(' ').slice(1).join(' ') || '',
+        phone: profile.phone || '',
+        address: '',
+        created_at: profile.created_at,
+        updated_at: profile.updated_at
+      };
 
-        console.log('✅ [DEBUG] Profile converted to client:', clientData);
-        return clientData;
-      }
-
-      return null;
-    } catch (err) {
-      console.error('❌ [DEBUG] Exception fetching profile:', err);
+      return clientData;
+    } catch {
       return null;
     }
   }, []);
 
-  const setAuthenticated = useCallback(async (value: boolean) => {
-    setIsAuthenticated(value);
-    if (value) {
-      const profile = await fetchUserProfile();
-      if (profile) {
-        setClient(profile);
-      } else {
-        setClient(mockClient);
-      }
-      setCurrentView('credits');
-      fetchMessages();
+  const handleSignIn = useCallback(async (userId: string) => {
+    const profile = await fetchUserProfile(userId);
+    if (profile) {
+      setClient(profile);
+      setIsDemo(false);
     } else {
       setClient(mockClient);
-      setCurrentView('login');
-      setMessages(mockMessages);
+      setIsDemo(true);
     }
-  }, [fetchMessages, fetchUserProfile]);
+    setIsAuthenticatedState(true);
+    setCurrentView('credits');
+    fetchMessages(userId);
+  }, [fetchUserProfile, fetchMessages]);
+
+  const handleSignOut = useCallback(() => {
+    setIsAuthenticatedState(false);
+    setIsDemo(true);
+    setClient(null);
+    setMessages(mockMessages);
+    setUserRole(null);
+    setCurrentView('login');
+  }, []);
+
+  const setAuthenticated = useCallback(async (value: boolean) => {
+    if (value) {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        await handleSignIn(user.id);
+      }
+    } else {
+      handleSignOut();
+    }
+  }, [handleSignIn, handleSignOut]);
 
   const getCreditById = useCallback((creditId: string) => {
     return credits.find((c) => c.id === creditId);
@@ -200,8 +157,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }, [messages]);
 
   const markMessageAsRead = useCallback(async (messageId: string) => {
-    console.log('📖 [DEBUG] Marking message as read:', messageId);
-
     setMessages((prev) =>
       prev.map((msg) =>
         msg.id === messageId ? { ...msg, is_read: true } : msg
@@ -209,18 +164,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
     );
 
     try {
-      const { error } = await supabase
+      await supabase
         .from('inbox_messages')
         .update({ is_read: true })
         .eq('id', messageId);
-
-      if (error) {
-        console.error('❌ [DEBUG] Error marking message as read:', error);
-      } else {
-        console.log('✅ [DEBUG] Message marked as read successfully');
-      }
-    } catch (err) {
-      console.error('❌ [DEBUG] Exception marking message as read:', err);
+    } catch {
+      // silent fail for read status
     }
   }, []);
 
@@ -231,28 +180,25 @@ export function AppProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
-
   useEffect(() => {
-    console.log('🚀 [DEBUG] App starting...');
-
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      console.log('Auth state changed:', event, session?.user?.id);
-
       if ((event === 'SIGNED_IN' || event === 'INITIAL_SESSION') && session?.user) {
-        setAuthenticated(true);
+        (async () => {
+          await handleSignIn(session.user.id);
+          setIsLoading(false);
+        })();
       } else if (event === 'SIGNED_OUT') {
-        setIsAuthenticated(false);
-        setClient(mockClient);
-        setMessages(mockMessages);
-        setUserRole(null);
-        setCurrentView('credits');
+        handleSignOut();
+        setIsLoading(false);
+      } else if (event === 'INITIAL_SESSION' && !session) {
+        setIsLoading(false);
       }
     });
 
     return () => {
       subscription.unsubscribe();
     };
-  }, [setAuthenticated]);
+  }, [handleSignIn, handleSignOut]);
 
   return (
     <AppContext.Provider
@@ -262,6 +208,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         selectedMessageId,
         isAuthenticated,
         isDemo,
+        isLoading,
         client,
         credits,
         messages,
