@@ -236,14 +236,15 @@ export function AppProvider({ children }: { children: ReactNode }) {
     console.log('🚀 [DEBUG] App starting...');
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      console.log('🔄 [DEBUG] Auth state changed:', event, session?.user?.id);
+      console.log('Auth state changed:', event, session?.user?.id);
 
-      if (event === 'SIGNED_IN' && session?.user) {
+      if ((event === 'SIGNED_IN' || event === 'INITIAL_SESSION') && session?.user) {
         setAuthenticated(true);
       } else if (event === 'SIGNED_OUT') {
         setIsAuthenticated(false);
         setClient(mockClient);
         setMessages(mockMessages);
+        setUserRole(null);
         setCurrentView('credits');
       }
     });
