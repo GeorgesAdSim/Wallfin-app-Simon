@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useCallback, useEffect, useRef, type ReactNode } from 'react';
 import type { ViewType, Client, Message } from '../types';
 import type { Credit } from '../types';
-import { mockCredits, mockMessages, mockClient } from '../data/mockData';
+import { mockCredits, mockMessages } from '../data/mockData';
 import { supabase } from '../lib/supabase';
 
 interface AppContextType {
@@ -103,11 +103,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
         });
         setIsDemo(false);
       } else {
-        setClient(mockClient);
         setIsDemo(true);
       }
     } catch {
-      setClient(mockClient);
       setIsDemo(true);
     }
 

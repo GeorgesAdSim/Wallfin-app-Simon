@@ -102,7 +102,7 @@ export function Register() {
                 value={formData.email}
                 onChange={(e) => handleChange('email', e.target.value)}
                 className="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                placeholder="jean.dupont@email.be"
+                placeholder="votre@email.be"
                 required
               />
             </div>
@@ -117,7 +117,7 @@ export function Register() {
                 value={formData.phone}
                 onChange={(e) => handleChange('phone', e.target.value)}
                 className="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                placeholder="+32 470 12 34 56"
+                placeholder="+32 4XX XX XX XX"
                 required
               />
             </div>

@@ -109,7 +109,7 @@ export function Login() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     className="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#F57C00] focus:border-transparent"
-                    placeholder="jean.dupont@email.be"
+                    placeholder="votre@email.be"
                     required
                   />
                 </div>

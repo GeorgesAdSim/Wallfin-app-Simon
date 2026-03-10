@@ -109,7 +109,7 @@ export function Landing() {
                 type="text"
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                placeholder="Jean Dupont"
+                placeholder="Votre nom complet"
                 className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all"
                 required
               />
@@ -276,7 +276,7 @@ export function Landing() {
                       type="tel"
                       value={authData.phone}
                       onChange={(e) => setAuthData({ ...authData, phone: e.target.value })}
-                      placeholder="+32 470 12 34 56"
+                      placeholder="+32 4XX XX XX XX"
                       className="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all"
                       required
                     />

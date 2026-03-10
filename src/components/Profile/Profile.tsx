@@ -1,33 +1,83 @@
-import { useState } from 'react';
-import { User, Mail, Phone, MapPin, Calendar, Shield, LogOut, ChevronRight, X, Check } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { User, Mail, Phone, Calendar, Shield, LogOut, ChevronRight, X, Check, Loader2 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { supabase } from '../../lib/supabase';
 import { formatDate } from '../../utils/format';
 import { AdminMessages } from '../Admin/AdminMessages';
 
+interface ProfileData {
+  id: string;
+  email: string;
+  name: string;
+  role: string;
+  phone: string | null;
+  avatar_url: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
 export function Profile() {
-  const { client, setAuthenticated, updateClient, userRole } = useApp();
+  const { setAuthenticated, navigateTo } = useApp();
+  const [profile, setProfile] = useState<ProfileData | null>(null);
+  const [isLoadingProfile, setIsLoadingProfile] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
-  const [editData, setEditData] = useState({
-    first_name: client?.first_name || '',
-    last_name: client?.last_name || '',
-    phone: client?.phone || '',
-    address: client?.address || '',
-    gender: client?.gender || '',
-  });
+  const [editData, setEditData] = useState({ name: '', phone: '' });
   const [isSaving, setIsSaving] = useState(false);
 
-  if (!client) {
+  useEffect(() => {
+    loadProfile();
+  }, []);
+
+  const loadProfile = async () => {
+    setIsLoadingProfile(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        navigateTo('login');
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user.id)
+        .maybeSingle();
+
+      if (error || !data) {
+        navigateTo('login');
+        return;
+      }
+
+      setProfile(data as ProfileData);
+    } catch {
+      navigateTo('login');
+    } finally {
+      setIsLoadingProfile(false);
+    }
+  };
+
+  if (isLoadingProfile) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <Loader2 className="w-8 h-8 text-orange-500 animate-spin" />
+      </div>
+    );
+  }
+
+  if (!profile) {
     return null;
   }
 
+  const firstName = profile.name?.split(' ')[0] || '';
+  const lastName = profile.name?.split(' ').slice(1).join(' ') || '';
+  const initials = `${firstName[0] || ''}${lastName[0] || firstName[1] || ''}`.toUpperCase();
+
   const profileItems = [
-    { icon: User, label: 'Nom complet', value: `${client.first_name} ${client.last_name}` },
-    { icon: Mail, label: 'Email', value: client.email },
-    { icon: Phone, label: 'Telephone', value: client.phone || 'Non renseigne' },
-    { icon: MapPin, label: 'Adresse', value: client.address || 'Non renseignee' },
-    { icon: Calendar, label: 'Date de naissance', value: client.birth_date ? formatDate(client.birth_date) : 'Non renseignee' },
-    { icon: Shield, label: 'Sexe', value: client.gender === 'M' ? 'Homme' : client.gender === 'F' ? 'Femme' : 'Non renseigne' },
+    { icon: User, label: 'Nom complet', value: profile.name || 'Non renseigne' },
+    { icon: Mail, label: 'Email', value: profile.email },
+    { icon: Phone, label: 'Telephone', value: profile.phone || 'Non renseigne' },
+    { icon: Calendar, label: 'Membre depuis', value: formatDate(profile.created_at) },
+    { icon: Shield, label: 'Role', value: profile.role === 'admin' ? 'Administrateur' : profile.role === 'manager' ? 'Manager' : 'Client' },
   ];
 
   const handleLogout = async () => {
@@ -37,21 +87,38 @@ export function Profile() {
 
   const handleEdit = () => {
     setEditData({
-      first_name: client.first_name,
-      last_name: client.last_name,
-      phone: client.phone || '',
-      address: client.address || '',
-      gender: client.gender || '',
+      name: profile.name || '',
+      phone: profile.phone || '',
     });
     setIsEditing(true);
   };
 
   const handleSave = async () => {
     setIsSaving(true);
-    await new Promise((resolve) => setTimeout(resolve, 800));
-    updateClient(editData);
-    setIsSaving(false);
-    setIsEditing(false);
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .update({
+          name: editData.name.trim(),
+          phone: editData.phone.trim() || null,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', profile.id);
+
+      if (!error) {
+        setProfile((prev) => prev ? {
+          ...prev,
+          name: editData.name.trim(),
+          phone: editData.phone.trim() || null,
+          updated_at: new Date().toISOString(),
+        } : prev);
+        setIsEditing(false);
+      }
+    } catch {
+      // silent
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const handleCancel = () => {
@@ -72,25 +139,14 @@ export function Profile() {
         </div>
 
         <div className="bg-white rounded-xl border border-gray-100 p-4 space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Prenom</label>
-              <input
-                type="text"
-                value={editData.first_name}
-                onChange={(e) => setEditData({ ...editData, first_name: e.target.value })}
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Nom</label>
-              <input
-                type="text"
-                value={editData.last_name}
-                onChange={(e) => setEditData({ ...editData, last_name: e.target.value })}
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all"
-              />
-            </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Nom complet</label>
+            <input
+              type="text"
+              value={editData.name}
+              onChange={(e) => setEditData({ ...editData, name: e.target.value })}
+              className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all"
+            />
           </div>
 
           <div>
@@ -99,39 +155,14 @@ export function Profile() {
               type="tel"
               value={editData.phone}
               onChange={(e) => setEditData({ ...editData, phone: e.target.value })}
-              placeholder="+32 470 12 34 56"
+              placeholder="+32 4XX XX XX XX"
               className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all"
             />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Adresse</label>
-            <input
-              type="text"
-              value={editData.address}
-              onChange={(e) => setEditData({ ...editData, address: e.target.value })}
-              placeholder="Rue, numero, code postal, ville"
-              className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Sexe</label>
-            <select
-              value={editData.gender}
-              onChange={(e) => setEditData({ ...editData, gender: e.target.value })}
-              className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all bg-white"
-            >
-              <option value="">Non renseigne</option>
-              <option value="M">Homme</option>
-              <option value="F">Femme</option>
-              <option value="Autre">Autre</option>
-            </select>
           </div>
 
           <div className="bg-gray-50 rounded-xl p-4">
             <p className="text-xs text-gray-500">
-              <strong>Note :</strong> L'email et la date de naissance ne peuvent pas etre modifies depuis cette interface.
+              <strong>Note :</strong> L'email ne peut pas etre modifie depuis cette interface.
               Contactez le service client pour toute modification.
             </p>
           </div>
@@ -146,7 +177,7 @@ export function Profile() {
           </button>
           <button
             onClick={handleSave}
-            disabled={isSaving}
+            disabled={isSaving || !editData.name.trim()}
             className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-orange-500 text-white rounded-xl hover:bg-orange-600 transition-colors font-medium disabled:opacity-50"
           >
             {isSaving ? (
@@ -171,11 +202,11 @@ export function Profile() {
       <div className="text-center">
         <div className="w-20 h-20 bg-gradient-to-br from-orange-500 to-orange-600 rounded-full flex items-center justify-center mx-auto mb-4">
           <span className="text-white font-bold text-2xl">
-            {client.first_name[0]}{client.last_name[0]}
+            {initials}
           </span>
         </div>
-        <h1 className="text-xl font-bold text-gray-900">{client.first_name} {client.last_name}</h1>
-        <p className="text-sm text-gray-500">Client depuis {formatDate(client.created_at)}</p>
+        <h1 className="text-xl font-bold text-gray-900">{profile.name}</h1>
+        <p className="text-sm text-gray-500">Client depuis {formatDate(profile.created_at)}</p>
       </div>
 
       <div className="bg-white rounded-xl border border-gray-100 divide-y divide-gray-50">
@@ -219,10 +250,10 @@ export function Profile() {
       </button>
 
       <p className="text-xs text-gray-400 text-center">
-        Derniere mise a jour : {formatDate(client.updated_at)}
+        Derniere mise a jour : {formatDate(profile.updated_at)}
       </p>
 
-      {userRole === 'admin' && (
+      {profile.role === 'admin' && (
         <div className="mt-6">
           <AdminMessages />
         </div>
