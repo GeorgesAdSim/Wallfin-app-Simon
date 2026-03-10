@@ -89,6 +89,11 @@ export interface Profile {
 export interface Database {
   public: {
     Tables: {
+      profiles: {
+        Row: Profile;
+        Insert: Omit<Profile, 'created_at' | 'updated_at'>;
+        Update: Partial<Omit<Profile, 'id' | 'created_at'>>;
+      };
       clients: {
         Row: Client;
         Insert: Omit<Client, 'created_at' | 'updated_at'>;

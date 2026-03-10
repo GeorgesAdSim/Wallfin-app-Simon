@@ -1,5 +1,6 @@
-import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from 'react';
-import type { ViewType, Client, Credit, Message } from '../types';
+import { createContext, useContext, useState, useCallback, useEffect, useRef, type ReactNode } from 'react';
+import type { ViewType, Client, Message } from '../types';
+import type { Credit } from '../types';
 import { mockCredits, mockMessages, mockClient } from '../data/mockData';
 import { supabase } from '../lib/supabase';
 
@@ -47,25 +48,22 @@ export function AppProvider({ children }: { children: ReactNode }) {
         .eq('user_id', userId)
         .order('created_at', { ascending: false });
 
-      if (error) {
+      if (error || !data || data.length === 0) {
+        setMessages(mockMessages);
         return;
       }
 
-      if (data && data.length > 0) {
-        const convertedMessages: Message[] = data.map((msg) => ({
-          id: msg.id,
-          titre: msg.titre,
-          contenu: msg.contenu,
-          created_at: msg.created_at,
-          is_read: msg.is_read,
-          type: 'info'
-        }));
-        setMessages(convertedMessages);
-      } else {
-        setMessages(mockMessages);
-      }
+      const convertedMessages: Message[] = data.map((msg) => ({
+        id: msg.id,
+        titre: msg.titre,
+        contenu: msg.contenu,
+        created_at: msg.created_at,
+        is_read: msg.is_read,
+        type: 'info'
+      }));
+      setMessages(convertedMessages);
     } catch {
-      // keep existing messages on error
+      setMessages(mockMessages);
     }
   }, []);
 
@@ -83,7 +81,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  const fetchUserProfile = useCallback(async (userId: string) => {
+  const handleSignIn = useCallback(async (userId: string) => {
     try {
       const { data: profile, error: profileError } = await supabase
         .from('profiles')
@@ -91,42 +89,32 @@ export function AppProvider({ children }: { children: ReactNode }) {
         .eq('id', userId)
         .maybeSingle();
 
-      if (profileError || !profile) {
-        return null;
+      if (!profileError && profile) {
+        setUserRole(profile.role);
+        setClient({
+          id: profile.id,
+          email: profile.email,
+          first_name: profile.name?.split(' ')[0] || profile.name || '',
+          last_name: profile.name?.split(' ').slice(1).join(' ') || '',
+          phone: profile.phone || '',
+          address: '',
+          created_at: profile.created_at,
+          updated_at: profile.updated_at,
+        });
+        setIsDemo(false);
+      } else {
+        setClient(mockClient);
+        setIsDemo(true);
       }
-
-      setUserRole(profile.role);
-
-      const clientData: Client = {
-        id: profile.id,
-        email: profile.email,
-        first_name: profile.name.split(' ')[0] || profile.name,
-        last_name: profile.name.split(' ').slice(1).join(' ') || '',
-        phone: profile.phone || '',
-        address: '',
-        created_at: profile.created_at,
-        updated_at: profile.updated_at
-      };
-
-      return clientData;
     } catch {
-      return null;
-    }
-  }, []);
-
-  const handleSignIn = useCallback(async (userId: string) => {
-    const profile = await fetchUserProfile(userId);
-    if (profile) {
-      setClient(profile);
-      setIsDemo(false);
-    } else {
       setClient(mockClient);
       setIsDemo(true);
     }
+
     setIsAuthenticatedState(true);
     setCurrentView('credits');
     fetchMessages(userId);
-  }, [fetchUserProfile, fetchMessages]);
+  }, [fetchMessages]);
 
   const handleSignOut = useCallback(() => {
     setIsAuthenticatedState(false);
@@ -137,16 +125,21 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setCurrentView('login');
   }, []);
 
+  const handleSignInRef = useRef(handleSignIn);
+  handleSignInRef.current = handleSignIn;
+  const handleSignOutRef = useRef(handleSignOut);
+  handleSignOutRef.current = handleSignOut;
+
   const setAuthenticated = useCallback(async (value: boolean) => {
     if (value) {
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
-        await handleSignIn(user.id);
+        await handleSignInRef.current(user.id);
       }
     } else {
-      handleSignOut();
+      handleSignOutRef.current();
     }
-  }, [handleSignIn, handleSignOut]);
+  }, []);
 
   const getCreditById = useCallback((creditId: string) => {
     return credits.find((c) => c.id === creditId);
@@ -169,7 +162,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         .update({ is_read: true })
         .eq('id', messageId);
     } catch {
-      // silent fail for read status
+      // silent
     }
   }, []);
 
@@ -183,12 +176,13 @@ export function AppProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if ((event === 'SIGNED_IN' || event === 'INITIAL_SESSION') && session?.user) {
+        const userId = session.user.id;
         (async () => {
-          await handleSignIn(session.user.id);
+          await handleSignInRef.current(userId);
           setIsLoading(false);
         })();
       } else if (event === 'SIGNED_OUT') {
-        handleSignOut();
+        handleSignOutRef.current();
         setIsLoading(false);
       } else if (event === 'INITIAL_SESSION' && !session) {
         setIsLoading(false);
@@ -198,7 +192,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     return () => {
       subscription.unsubscribe();
     };
-  }, [handleSignIn, handleSignOut]);
+  }, []);
 
   return (
     <AppContext.Provider
