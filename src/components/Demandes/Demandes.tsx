@@ -258,9 +258,9 @@ export function Demandes() {
               required
             >
               <option value="" style={{ color: '#6B7280' }}>Selectionnez un sujet</option>
-              <option value="Demande d'argent supplémentaire" style={{ color: '#1e293b' }}>Demande d'argent supplementaire</option>
-              <option value="Question sur mon crédit" style={{ color: '#1e293b' }}>Question sur mon credit</option>
-              <option value="Problème technique" style={{ color: '#1e293b' }}>Probleme technique</option>
+              <option value="Demande d'argent supplémentaire" style={{ color: '#1e293b' }}>Demande d'argent supplémentaire</option>
+              <option value="Question sur mon crédit" style={{ color: '#1e293b' }}>Question sur mon crédit</option>
+              <option value="Problème technique" style={{ color: '#1e293b' }}>Problème technique</option>
               <option value="Modifier mes informations" style={{ color: '#1e293b' }}>Modifier mes informations</option>
               <option value="Autre" style={{ color: '#1e293b' }}>Autre</option>
             </select>
