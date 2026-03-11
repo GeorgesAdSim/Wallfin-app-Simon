@@ -97,7 +97,7 @@ export function Demandes() {
     setShowSuccess(false);
     setShowError(false);
 
-    const clientName = `${client.first_name} ${client.last_name}`;
+    const clientName = client.name;
     const selectedCredit = creditId ? credits.find(c => c.id === creditId) : null;
     const creditReference = selectedCredit?.reference_number || null;
     const currentDate = new Date().toLocaleDateString('fr-BE');
@@ -129,7 +129,7 @@ export function Demandes() {
           to_email: 'info@wallfin.be',
           from_name: clientName,
           from_email: client.email,
-          from_phone: client.phone,
+          from_phone: '',
           subject: subject,
           credit_reference: creditReference || 'Non applicable',
           message: message,
@@ -147,10 +147,8 @@ export function Demandes() {
             },
             body: JSON.stringify({
               client: {
-                firstName: client.first_name,
-                lastName: client.last_name,
+                name: client.name,
                 email: client.email,
-                phone: client.phone,
               },
               subject,
               creditReference,

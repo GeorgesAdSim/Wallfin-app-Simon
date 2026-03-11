@@ -17,7 +17,7 @@ export function Login() {
     try {
       const { data: profile, error: profileError } = await supabase
         .from('profiles')
-        .select('email, is_active')
+        .select('email')
         .eq('email', email)
         .maybeSingle();
 
@@ -30,12 +30,6 @@ export function Login() {
 
       if (!profile) {
         setError('Accès non autorisé. Contactez votre conseiller Wallfin.');
-        setIsLoading(false);
-        return;
-      }
-
-      if (!profile.is_active) {
-        setError('Votre compte est désactivé. Contactez votre conseiller Wallfin.');
         setIsLoading(false);
         return;
       }

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { User, Mail, Phone, Calendar, Shield, LogOut, ChevronRight, X, Check, Loader2 } from 'lucide-react';
+import { User, Mail, Shield, Calendar, LogOut, ChevronRight, X, Check, Loader2, Image } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { supabase } from '../../lib/supabase';
 import { formatDate } from '../../utils/format';
@@ -10,10 +10,8 @@ interface ProfileData {
   email: string;
   name: string;
   role: string;
-  phone: string | null;
   avatar_url: string | null;
   created_at: string;
-  updated_at: string;
 }
 
 export function Profile() {
@@ -21,7 +19,7 @@ export function Profile() {
   const [profile, setProfile] = useState<ProfileData | null>(null);
   const [isLoadingProfile, setIsLoadingProfile] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
-  const [editData, setEditData] = useState({ name: '', phone: '' });
+  const [editData, setEditData] = useState({ name: '' });
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
@@ -39,7 +37,7 @@ export function Profile() {
 
       const { data, error } = await supabase
         .from('profiles')
-        .select('*')
+        .select('id, email, name, role, avatar_url')
         .eq('id', user.id)
         .maybeSingle();
 
@@ -48,7 +46,10 @@ export function Profile() {
         return;
       }
 
-      setProfile(data as ProfileData);
+      setProfile({
+        ...data,
+        created_at: user.created_at || new Date().toISOString(),
+      });
     } catch {
       navigateTo('login');
     } finally {
@@ -72,13 +73,18 @@ export function Profile() {
   const lastName = profile.name?.split(' ').slice(1).join(' ') || '';
   const initials = `${firstName[0] || ''}${lastName[0] || firstName[1] || ''}`.toUpperCase();
 
+  const roleLabel = profile.role === 'admin' ? 'Administrateur' : profile.role === 'manager' ? 'Manager' : 'Client';
+
   const profileItems = [
     { icon: User, label: 'Nom complet', value: profile.name || 'Non renseigne' },
     { icon: Mail, label: 'Email', value: profile.email },
-    { icon: Phone, label: 'Telephone', value: profile.phone || 'Non renseigne' },
+    { icon: Shield, label: 'Role', value: roleLabel },
     { icon: Calendar, label: 'Membre depuis', value: formatDate(profile.created_at) },
-    { icon: Shield, label: 'Role', value: profile.role === 'admin' ? 'Administrateur' : profile.role === 'manager' ? 'Manager' : 'Client' },
   ];
+
+  if (profile.avatar_url) {
+    profileItems.push({ icon: Image, label: 'Avatar', value: profile.avatar_url });
+  }
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -88,7 +94,6 @@ export function Profile() {
   const handleEdit = () => {
     setEditData({
       name: profile.name || '',
-      phone: profile.phone || '',
     });
     setIsEditing(true);
   };
@@ -100,8 +105,6 @@ export function Profile() {
         .from('profiles')
         .update({
           name: editData.name.trim(),
-          phone: editData.phone.trim() || null,
-          updated_at: new Date().toISOString(),
         })
         .eq('id', profile.id);
 
@@ -109,8 +112,6 @@ export function Profile() {
         setProfile((prev) => prev ? {
           ...prev,
           name: editData.name.trim(),
-          phone: editData.phone.trim() || null,
-          updated_at: new Date().toISOString(),
         } : prev);
         setIsEditing(false);
       }
@@ -149,20 +150,9 @@ export function Profile() {
             />
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Telephone</label>
-            <input
-              type="tel"
-              value={editData.phone}
-              onChange={(e) => setEditData({ ...editData, phone: e.target.value })}
-              placeholder="+32 4XX XX XX XX"
-              className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all"
-            />
-          </div>
-
           <div className="bg-gray-50 rounded-xl p-4">
             <p className="text-xs text-gray-500">
-              <strong>Note :</strong> L'email ne peut pas etre modifie depuis cette interface.
+              <strong>Note :</strong> L'email et le role ne peuvent pas etre modifies depuis cette interface.
               Contactez le service client pour toute modification.
             </p>
           </div>
@@ -200,17 +190,25 @@ export function Profile() {
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <div className="w-20 h-20 bg-gradient-to-br from-orange-500 to-orange-600 rounded-full flex items-center justify-center mx-auto mb-4">
-          <span className="text-white font-bold text-2xl">
-            {initials}
-          </span>
-        </div>
+        {profile.avatar_url ? (
+          <img
+            src={profile.avatar_url}
+            alt={profile.name}
+            className="w-20 h-20 rounded-full object-cover mx-auto mb-4"
+          />
+        ) : (
+          <div className="w-20 h-20 bg-gradient-to-br from-orange-500 to-orange-600 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span className="text-white font-bold text-2xl">
+              {initials}
+            </span>
+          </div>
+        )}
         <h1 className="text-xl font-bold text-gray-900">{profile.name}</h1>
-        <p className="text-sm text-gray-500">Client depuis {formatDate(profile.created_at)}</p>
+        <p className="text-sm text-gray-500">{roleLabel} depuis {formatDate(profile.created_at)}</p>
       </div>
 
       <div className="bg-white rounded-xl border border-gray-100 divide-y divide-gray-50">
-        {profileItems.map((item) => {
+        {profileItems.filter(item => item.label !== 'Avatar').map((item) => {
           const Icon = item.icon;
           return (
             <div key={item.label} className="px-4 py-3 flex items-center gap-3">
@@ -248,10 +246,6 @@ export function Profile() {
         <LogOut className="w-5 h-5" />
         <span className="font-medium">Se deconnecter</span>
       </button>
-
-      <p className="text-xs text-gray-400 text-center">
-        Derniere mise a jour : {formatDate(profile.updated_at)}
-      </p>
 
       {profile.role === 'admin' && (
         <div className="mt-6">

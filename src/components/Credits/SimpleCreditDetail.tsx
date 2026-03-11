@@ -112,7 +112,7 @@ export function SimpleCreditDetail() {
         body: JSON.stringify({
           creditType: credit.type,
           creditReference: credit.reference_number,
-          clientName: `${client.first_name} ${client.last_name}`,
+          clientName: client.name,
           clientEmail: client.email,
           amount: parseFloat(additionalAmount),
           comment: additionalComment.trim(),

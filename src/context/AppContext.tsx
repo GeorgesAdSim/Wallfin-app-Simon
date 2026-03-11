@@ -82,21 +82,23 @@ export function AppProvider({ children }: { children: ReactNode }) {
     try {
       const { data: profile, error: profileError } = await supabase
         .from('profiles')
-        .select('*')
+        .select('id, email, name, role, avatar_url')
         .eq('id', userId)
         .maybeSingle();
 
       if (!profileError && profile) {
         setUserRole(profile.role);
+
+        const { data: { user } } = await supabase.auth.getUser();
+        const createdAt = user?.created_at || new Date().toISOString();
+
         setClient({
           id: profile.id,
           email: profile.email,
-          first_name: profile.name?.split(' ')[0] || profile.name || '',
-          last_name: profile.name?.split(' ').slice(1).join(' ') || '',
-          phone: profile.phone || '',
-          address: '',
-          created_at: profile.created_at,
-          updated_at: profile.updated_at,
+          name: profile.name || '',
+          role: profile.role,
+          avatar_url: profile.avatar_url,
+          created_at: createdAt,
         });
       } else {
         setClient(null);

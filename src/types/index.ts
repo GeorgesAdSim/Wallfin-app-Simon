@@ -18,14 +18,10 @@ export type CreditStatus = 'en_cours' | 'en_attente' | 'solde';
 export interface Client {
   id: string;
   email: string;
-  first_name: string;
-  last_name: string;
-  phone: string;
-  address?: string;
-  birth_date?: string;
-  gender?: string;
+  name: string;
+  role: string;
+  avatar_url: string | null;
   created_at: string;
-  updated_at: string;
 }
 
 export interface Credit {
@@ -53,4 +49,24 @@ export interface AppState {
   currentView: ViewType;
   selectedCreditId: string | null;
   isAuthenticated: boolean;
+}
+
+export interface CreditRequestFormData {
+  creditType: string;
+  amount: number;
+  durationMonths: number;
+  projectDescription: string;
+  employmentStatus: string;
+  monthlyIncome: number;
+  familyStatus: string;
+  householdSize: number;
+  rentMortgage: number;
+  currentCredits: number;
+  otherCharges: number;
+  isBelgianResident: boolean;
+  isNotBnbListed: boolean;
+  acceptsDataProcessing: boolean;
+  contactName: string;
+  contactEmail: string;
+  contactPhone: string;
 }

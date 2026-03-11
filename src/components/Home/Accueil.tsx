@@ -1,26 +1,11 @@
 import { useApp } from '../../context/AppContext';
-import { Mail, Phone, MapPin, LogOut, Edit, Check, X } from 'lucide-react';
-import { useState, useEffect, useId } from 'react';
+import { Mail, LogOut, Shield, Calendar } from 'lucide-react';
+import { useId } from 'react';
 
 export function Accueil() {
-  const { client, setAuthenticated, updateClient } = useApp();
-  const [isEditing, setIsEditing] = useState(false);
-  const [editedEmail, setEditedEmail] = useState('');
-  const [editedPhone, setEditedPhone] = useState('');
-  const [editedAddress, setEditedAddress] = useState('');
-  const [showToast, setShowToast] = useState(false);
+  const { client, setAuthenticated } = useApp();
 
   const emailId = useId();
-  const phoneId = useId();
-  const addressId = useId();
-
-  useEffect(() => {
-    if (client) {
-      setEditedEmail(client.email);
-      setEditedPhone(client.phone);
-      setEditedAddress(client.address || '');
-    }
-  }, [client]);
 
   if (!client) return null;
 
@@ -29,48 +14,23 @@ export function Accueil() {
   };
 
   const getInitials = () => {
-    return `${client.first_name.charAt(0)}${client.last_name.charAt(0)}`.toUpperCase();
+    const parts = client.name.trim().split(' ');
+    if (parts.length >= 2) {
+      return `${parts[0].charAt(0)}${parts[1].charAt(0)}`.toUpperCase();
+    }
+    return client.name.substring(0, 2).toUpperCase();
   };
 
-  const handleEdit = () => {
-    setIsEditing(true);
-  };
+  const roleLabel = client.role === 'admin' ? 'Administrateur' : client.role === 'manager' ? 'Manager' : 'Client';
 
-  const handleCancel = () => {
-    setEditedEmail(client.email);
-    setEditedPhone(client.phone);
-    setEditedAddress(client.address || '');
-    setIsEditing(false);
-  };
-
-  const handleSave = () => {
-    const updates = {
-      email: editedEmail,
-      phone: editedPhone,
-      address: editedAddress,
-    };
-
-    updateClient(updates);
-    localStorage.setItem('client', JSON.stringify({ ...client, ...updates }));
-
-    setIsEditing(false);
-    setShowToast(true);
-    setTimeout(() => setShowToast(false), 3000);
-  };
+  const memberSince = new Date(client.created_at).toLocaleDateString('fr-BE', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  });
 
   return (
     <div className="pb-20 px-4 py-6">
-      {showToast && (
-        <div
-          role="status"
-          aria-live="polite"
-          className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg z-50 flex items-center gap-2"
-        >
-          <Check className="w-5 h-5" aria-hidden="true" />
-          <span className="font-medium">Vos informations ont ete mises a jour</span>
-        </div>
-      )}
-
       <h1 className="text-2xl font-bold text-slate-900 mb-6">Mon compte</h1>
 
       <section
@@ -78,16 +38,24 @@ export function Accueil() {
         className="bg-white rounded-xl p-6 mb-4 shadow-sm text-center"
       >
         <h2 id="profile-heading" className="sr-only">Profil utilisateur</h2>
-        <div
-          className="inline-flex items-center justify-center w-20 h-20 bg-orange-100 text-orange-600 rounded-full text-2xl font-bold mb-4"
-          aria-hidden="true"
-        >
-          {getInitials()}
-        </div>
+        {client.avatar_url ? (
+          <img
+            src={client.avatar_url}
+            alt={client.name}
+            className="w-20 h-20 rounded-full object-cover mx-auto mb-4"
+          />
+        ) : (
+          <div
+            className="inline-flex items-center justify-center w-20 h-20 bg-orange-100 text-orange-600 rounded-full text-2xl font-bold mb-4"
+            aria-hidden="true"
+          >
+            {getInitials()}
+          </div>
+        )}
         <p className="text-xl font-bold text-slate-900 mb-1">
-          {client.first_name} {client.last_name}
+          {client.name}
         </p>
-        <p className="font-medium" style={{ fontSize: '14px', color: '#6B7280' }}>Client Wallfin</p>
+        <p className="font-medium" style={{ fontSize: '14px', color: '#6B7280' }}>{roleLabel} Wallfin</p>
       </section>
 
       <section
@@ -108,103 +76,28 @@ export function Accueil() {
               >
                 Email
               </label>
-              {isEditing ? (
-                <input
-                  id={emailId}
-                  type="email"
-                  value={editedEmail}
-                  onChange={(e) => setEditedEmail(e.target.value)}
-                  className="w-full text-base font-medium text-slate-900 bg-white border border-slate-300 rounded-lg px-3 py-2 min-h-[48px]"
-                />
-              ) : (
-                <p id={emailId} className="text-base font-medium text-slate-900">
-                  {client.email}
-                </p>
-              )}
+              <p id={emailId} className="text-base font-medium text-slate-900">
+                {client.email}
+              </p>
             </div>
           </div>
 
           <div className="flex items-start gap-3 p-4 bg-slate-50 rounded-lg">
-            <Phone className="w-6 h-6 text-slate-500 mt-0.5" aria-hidden="true" />
+            <Shield className="w-6 h-6 text-slate-500 mt-0.5" aria-hidden="true" />
             <div className="flex-1">
-              <label
-                htmlFor={phoneId}
-                className="block text-sm font-medium text-slate-700 mb-1"
-              >
-                Telephone
-              </label>
-              {isEditing ? (
-                <input
-                  id={phoneId}
-                  type="tel"
-                  value={editedPhone}
-                  onChange={(e) => setEditedPhone(e.target.value)}
-                  className="w-full text-base font-medium text-slate-900 bg-white border border-slate-300 rounded-lg px-3 py-2 min-h-[48px]"
-                />
-              ) : (
-                <p id={phoneId} className="text-base font-medium text-slate-900">
-                  {client.phone}
-                </p>
-              )}
+              <p className="text-sm font-medium text-slate-700 mb-1">Role</p>
+              <p className="text-base font-medium text-slate-900">{roleLabel}</p>
             </div>
           </div>
 
           <div className="flex items-start gap-3 p-4 bg-slate-50 rounded-lg">
-            <MapPin className="w-6 h-6 text-slate-500 mt-0.5" aria-hidden="true" />
+            <Calendar className="w-6 h-6 text-slate-500 mt-0.5" aria-hidden="true" />
             <div className="flex-1">
-              <label
-                htmlFor={addressId}
-                className="block text-sm font-medium text-slate-700 mb-1"
-              >
-                Adresse
-              </label>
-              {isEditing ? (
-                <input
-                  id={addressId}
-                  type="text"
-                  value={editedAddress}
-                  onChange={(e) => setEditedAddress(e.target.value)}
-                  className="w-full text-base font-medium text-slate-900 bg-white border border-slate-300 rounded-lg px-3 py-2 min-h-[48px]"
-                />
-              ) : (
-                <p id={addressId} className="text-base font-medium text-slate-900">
-                  {client.address || '-'}
-                </p>
-              )}
+              <p className="text-sm font-medium text-slate-700 mb-1">Membre depuis</p>
+              <p className="text-base font-medium text-slate-900">{memberSince}</p>
             </div>
           </div>
         </div>
-
-        {isEditing ? (
-          <div className="flex gap-3 mt-4">
-            <button
-              onClick={handleCancel}
-              aria-label="Annuler les modifications"
-              className="flex-1 bg-white border-2 border-slate-300 hover:bg-slate-50 text-slate-700 rounded-lg min-h-[48px] flex items-center justify-center gap-2 transition-colors font-medium"
-            >
-              <X className="w-5 h-5" aria-hidden="true" />
-              Annuler
-            </button>
-            <button
-              onClick={handleSave}
-              aria-label="Enregistrer les modifications"
-              className="flex-1 bg-orange-500 hover:bg-orange-600 text-white rounded-lg min-h-[48px] flex items-center justify-center gap-2 transition-colors font-medium"
-            >
-              <Check className="w-5 h-5" aria-hidden="true" />
-              Enregistrer
-            </button>
-          </div>
-        ) : (
-          <button
-            onClick={handleEdit}
-            aria-label="Modifier mes informations personnelles"
-            className="w-full mt-4 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-lg flex items-center justify-center gap-2 transition-colors font-medium"
-            style={{ height: '48px', fontSize: '16px' }}
-          >
-            <Edit className="w-5 h-5" aria-hidden="true" />
-            Modifier mes informations
-          </button>
-        )}
       </section>
 
       <button

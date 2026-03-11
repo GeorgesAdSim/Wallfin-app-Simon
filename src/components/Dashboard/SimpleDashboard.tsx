@@ -45,7 +45,7 @@ export function SimpleDashboard() {
               className="flex items-center gap-2 text-slate-700 hover:text-slate-900"
             >
               <User className="w-5 h-5" />
-              <span className="text-sm font-medium hidden sm:inline">{client.first_name}</span>
+              <span className="text-sm font-medium hidden sm:inline">{client.name?.split(' ')[0]}</span>
             </button>
           </div>
         </div>
@@ -53,7 +53,7 @@ export function SimpleDashboard() {
 
       <div className="max-w-4xl mx-auto px-4 py-8">
         <h1 className="text-2xl font-bold text-slate-900 mb-6">
-          Bonjour, {client.first_name} {client.last_name}
+          Bonjour, {client.name}
         </h1>
 
         <div className="bg-slate-800 rounded-xl p-6 mb-6 text-white">

@@ -1,24 +1,9 @@
-export type Gender = 'M' | 'F' | 'Autre';
 export type CreditType = 'personnel' | 'auto' | 'immobilier' | 'travaux' | 'consommation' | 'regroupement';
 export type CreditStatus = 'active' | 'completed' | 'suspended';
 export type MensualiteStatus = 'paid' | 'pending' | 'overdue';
 export type RequestType = 'information' | 'settlement' | 'new_credit';
 export type RequestStatus = 'pending' | 'in_progress' | 'completed';
 export type MessageType = 'paiement' | 'info' | 'rappel';
-
-export interface Client {
-  id: string;
-  first_name: string;
-  last_name: string;
-  phone: string | null;
-  email: string;
-  address: string | null;
-  birth_date: string | null;
-  gender: Gender | null;
-  is_client: boolean;
-  created_at: string;
-  updated_at: string;
-}
 
 export interface Credit {
   id: string;
@@ -79,11 +64,6 @@ export interface Profile {
   name: string;
   role: 'admin' | 'manager' | 'viewer';
   avatar_url: string | null;
-  phone: string | null;
-  is_active: boolean;
-  last_login_at: string | null;
-  created_at: string;
-  updated_at: string;
 }
 
 export interface Database {
@@ -91,13 +71,8 @@ export interface Database {
     Tables: {
       profiles: {
         Row: Profile;
-        Insert: Omit<Profile, 'created_at' | 'updated_at'>;
-        Update: Partial<Omit<Profile, 'id' | 'created_at'>>;
-      };
-      clients: {
-        Row: Client;
-        Insert: Omit<Client, 'created_at' | 'updated_at'>;
-        Update: Partial<Omit<Client, 'id' | 'created_at'>>;
+        Insert: Profile;
+        Update: Partial<Omit<Profile, 'id'>>;
       };
       credits: {
         Row: Credit;

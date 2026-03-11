@@ -90,7 +90,7 @@ export function Credits() {
         body: JSON.stringify({
           creditType: selectedCredit.type,
           creditReference: selectedCredit.reference_number,
-          clientName: `${client.first_name} ${client.last_name}`,
+          clientName: `${client.name}`,
           clientEmail: client.email,
           amount: parseFloat(additionalAmount),
           comment: comment.trim(),
@@ -185,7 +185,7 @@ export function Credits() {
         body: JSON.stringify({
           creditType: credit.type,
           creditReference: credit.reference_number,
-          clientName: `${client.first_name} ${client.last_name}`,
+          clientName: `${client.name}`,
           clientEmail: client.email,
           repaymentType: earlyRepayment.type,
           amount: earlyRepayment.type === 'partial' ? parseFloat(earlyRepayment.amount) : credit.restant_du,
@@ -229,7 +229,7 @@ export function Credits() {
 
       <div className="px-4">
         <h1 className="text-2xl font-bold text-[#333] mb-6">
-          Bonjour, {client.first_name} {client.last_name}
+          Bonjour, {client.name}
         </h1>
 
         <button

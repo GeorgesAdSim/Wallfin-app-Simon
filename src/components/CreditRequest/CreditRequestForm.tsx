@@ -34,9 +34,9 @@ export function CreditRequestForm() {
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState<CreditRequestFormData>(() => ({
     ...initialFormData,
-    contactName: client ? `${client.first_name} ${client.last_name}` : '',
+    contactName: client?.name || '',
     contactEmail: client?.email || '',
-    contactPhone: client?.phone || ''
+    contactPhone: ''
   }));
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -125,9 +125,9 @@ export function CreditRequestForm() {
         calculated_debt_ratio: validation.tauxEndettement,
         calculated_remaining_income: validation.resteAVivre,
         feasibility_status: validation.status,
-        contact_name: formData.contactName || client?.first_name + ' ' + client?.last_name || 'Non renseigne',
+        contact_name: formData.contactName || client?.name || 'Non renseigne',
         contact_email: formData.contactEmail || client?.email || 'non-renseigne@email.com',
-        contact_phone: formData.contactPhone || client?.phone || '',
+        contact_phone: formData.contactPhone || '',
         is_belgian_resident: formData.isBelgianResident,
         is_not_bnb_listed: formData.isNotBnbListed,
         accepts_data_processing: formData.acceptsDataProcessing

@@ -16,7 +16,7 @@ export function Dashboard() {
         <div>
           <p className="text-gray-500 text-sm">Bonjour,</p>
           <h1 className="text-2xl font-bold text-gray-900">
-            {client?.first_name} {client?.last_name}
+            {client?.name}
           </h1>
         </div>
       </div>
