@@ -1,7 +1,6 @@
 import { createContext, useContext, useState, useCallback, useEffect, useRef, type ReactNode } from 'react';
 import type { ViewType, Client, Message } from '../types';
 import type { Credit } from '../types';
-import { mockCredits, mockMessages } from '../data/mockData';
 import { supabase } from '../lib/supabase';
 
 interface AppContextType {
@@ -9,7 +8,6 @@ interface AppContextType {
   selectedCreditId: string | null;
   selectedMessageId: string | null;
   isAuthenticated: boolean;
-  isDemo: boolean;
   isLoading: boolean;
   client: Client | null;
   credits: Credit[];
@@ -31,11 +29,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [selectedCreditId, setSelectedCreditId] = useState<string | null>(null);
   const [selectedMessageId, setSelectedMessageId] = useState<string | null>(null);
   const [isAuthenticated, setIsAuthenticatedState] = useState(false);
-  const [isDemo, setIsDemo] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
   const [client, setClient] = useState<Client | null>(null);
-  const [credits] = useState<Credit[]>(mockCredits);
-  const [messages, setMessages] = useState<Message[]>(mockMessages);
+  const [credits, setCredits] = useState<Credit[]>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [userRole, setUserRole] = useState<string | null>(null);
 
   const unreadMessagesCount = messages.filter((m) => !m.is_read).length;
@@ -48,8 +45,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
         .eq('user_id', userId)
         .order('created_at', { ascending: false });
 
-      if (error || !data || data.length === 0) {
-        setMessages(mockMessages);
+      if (error || !data) {
+        setMessages([]);
         return;
       }
 
@@ -63,7 +60,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       }));
       setMessages(convertedMessages);
     } catch {
-      setMessages(mockMessages);
+      setMessages([]);
     }
   }, []);
 
@@ -101,12 +98,13 @@ export function AppProvider({ children }: { children: ReactNode }) {
           created_at: profile.created_at,
           updated_at: profile.updated_at,
         });
-        setIsDemo(false);
       } else {
-        setIsDemo(true);
+        setClient(null);
+        setUserRole(null);
       }
     } catch {
-      setIsDemo(true);
+      setClient(null);
+      setUserRole(null);
     }
 
     setIsAuthenticatedState(true);
@@ -116,9 +114,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   const handleSignOut = useCallback(() => {
     setIsAuthenticatedState(false);
-    setIsDemo(true);
     setClient(null);
-    setMessages(mockMessages);
+    setCredits([]);
+    setMessages([]);
     setUserRole(null);
     setCurrentView('login');
   }, []);
@@ -199,7 +197,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
         selectedCreditId,
         selectedMessageId,
         isAuthenticated,
-        isDemo,
         isLoading,
         client,
         credits,

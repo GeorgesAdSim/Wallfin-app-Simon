@@ -1,5 +1,4 @@
 import { ReactNode } from 'react';
-import { useApp } from '../../context/AppContext';
 import { BottomNav } from '../Navigation/BottomNav';
 import { Header } from './Header';
 
@@ -10,8 +9,6 @@ interface AppLayoutProps {
 }
 
 export function AppLayout({ children, showBottomNav = true, showHeader = true }: AppLayoutProps) {
-  const { isDemo } = useApp();
-
   return (
     <div className="min-h-screen bg-[#f5f7fa]">
       <a href="#main-content" className="skip-link">

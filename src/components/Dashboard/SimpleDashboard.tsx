@@ -1,9 +1,9 @@
 import { useApp } from '../../context/AppContext';
-import { Plus, ChevronRight, Square, User, Bell, Info } from 'lucide-react';
+import { Plus, ChevronRight, Square, User, Bell } from 'lucide-react';
 import { creditTypeIcons } from '../../data/mockData';
 
 export function SimpleDashboard() {
-  const { client, credits, navigateTo, isDemo } = useApp();
+  const { client, credits, navigateTo } = useApp();
 
   if (!client) return null;
 
@@ -24,13 +24,6 @@ export function SimpleDashboard() {
 
   return (
     <div className="min-h-screen bg-slate-50">
-      {isDemo && (
-        <div className="bg-orange-500 text-white py-2 px-4 text-center text-sm font-medium">
-          <Info className="inline w-4 h-4 mr-2" />
-          Mode démonstration - Données fictives à titre indicatif
-        </div>
-      )}
-
       <div className="bg-white border-b border-slate-200">
         <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">

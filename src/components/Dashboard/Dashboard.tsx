@@ -4,7 +4,7 @@ import { formatCurrency } from '../../utils/format';
 import { CreditCard } from '../Credits/CreditCard';
 
 export function Dashboard() {
-  const { client, credits, isDemo, navigateTo } = useApp();
+  const { client, credits, navigateTo } = useApp();
 
   const totalRemaining = credits.reduce((sum, c) => sum + c.remaining_amount, 0);
   const totalMonthlyPayment = credits.reduce((sum, c) => sum + c.monthly_payment, 0);
@@ -12,14 +12,6 @@ export function Dashboard() {
 
   return (
     <div className="space-y-6">
-      {isDemo && (
-        <div className="bg-orange-50 border border-orange-200 rounded-xl p-3">
-          <p className="text-orange-800 text-xs text-center">
-            Mode demonstration - Donnees fictives a titre indicatif
-          </p>
-        </div>
-      )}
-
       <div className="flex items-center justify-between">
         <div>
           <p className="text-gray-500 text-sm">Bonjour,</p>
