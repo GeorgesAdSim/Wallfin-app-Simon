@@ -15,25 +15,6 @@ export function Login() {
     setSuccess(false);
 
     try {
-      const { data: profile, error: profileError } = await supabase
-        .from('profiles')
-        .select('email')
-        .eq('email', email)
-        .maybeSingle();
-
-      if (profileError) {
-        console.error('Error checking profile:', profileError);
-        setError('Une erreur est survenue. Veuillez réessayer.');
-        setIsLoading(false);
-        return;
-      }
-
-      if (!profile) {
-        setError('Accès non autorisé. Contactez votre conseiller Wallfin.');
-        setIsLoading(false);
-        return;
-      }
-
       const { error: magicLinkError } = await supabase.auth.signInWithOtp({
         email,
         options: {
