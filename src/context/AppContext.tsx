@@ -37,6 +37,25 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   const unreadMessagesCount = messages.filter((m) => !m.is_read).length;
 
+  const fetchCredits = useCallback(async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('credits')
+        .select('*')
+        .eq('client_id', userId)
+        .order('created_at', { ascending: false });
+
+      if (error || !data) {
+        setCredits([]);
+        return;
+      }
+
+      setCredits(data as Credit[]);
+    } catch {
+      setCredits([]);
+    }
+  }, []);
+
   const fetchMessages = useCallback(async (userId: string) => {
     try {
       const { data, error } = await supabase
@@ -111,8 +130,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
     setIsAuthenticatedState(true);
     setCurrentView('credits');
+    fetchCredits(userId);
     fetchMessages(userId);
-  }, [fetchMessages]);
+  }, [fetchCredits, fetchMessages]);
 
   const handleSignOut = useCallback(() => {
     setIsAuthenticatedState(false);

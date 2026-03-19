@@ -221,13 +221,7 @@ export function Credits() {
 
   return (
     <div className="pb-20">
-      <div className="bg-[#F57C00] px-4 py-3 mb-6">
-        <p className="text-white text-sm text-center font-medium">
-          Mode démonstration - Données fictives à titre indicatif uniquement
-        </p>
-      </div>
-
-      <div className="px-4">
+      <div className="px-4 pt-6">
         <h1 className="text-2xl font-bold text-[#333] mb-6">
           Bonjour, {client.name}
         </h1>
