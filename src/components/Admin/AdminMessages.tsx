@@ -9,6 +9,8 @@ interface Viewer {
 }
 
 export function AdminMessages() {
+  const BROADCAST_VALUE = '__all__';
+
   const [viewers, setViewers] = useState<Viewer[]>([]);
   const [selectedViewer, setSelectedViewer] = useState('');
   const [titre, setTitre] = useState('');
@@ -44,6 +46,8 @@ export function AdminMessages() {
     }
   };
 
+  const isBroadcast = selectedViewer === BROADCAST_VALUE;
+
   const handleSendMessage = async () => {
     if (!selectedViewer || !titre.trim() || !contenu.trim()) {
       setMessage({ type: 'error', text: 'Veuillez remplir tous les champs' });
@@ -54,27 +58,46 @@ export function AdminMessages() {
     setMessage(null);
 
     try {
-      const { error } = await supabase
-        .from('inbox_messages')
-        .insert({
-          user_id: selectedViewer,
+      if (isBroadcast) {
+        const rows = viewers.map((v) => ({
+          user_id: v.id,
           titre: titre.trim(),
           contenu: contenu.trim(),
-          is_read: false
-        });
+          is_read: false,
+        }));
 
-      if (error) {
-        console.error('Error sending message:', error);
-        setMessage({ type: 'error', text: 'Erreur lors de l\'envoi du message' });
+        const { error } = await supabase.from('inbox_messages').insert(rows);
+
+        if (error) {
+          console.error('Error sending broadcast:', error);
+          setMessage({ type: 'error', text: 'Erreur lors de l\'envoi du message' });
+        } else {
+          setMessage({ type: 'success', text: `Message envoyé à ${viewers.length} utilisateur${viewers.length > 1 ? 's' : ''}` });
+          setSelectedViewer('');
+          setTitre('');
+          setContenu('');
+          setTimeout(() => setMessage(null), 3000);
+        }
       } else {
-        setMessage({ type: 'success', text: 'Message envoyé avec succès' });
-        setSelectedViewer('');
-        setTitre('');
-        setContenu('');
+        const { error } = await supabase
+          .from('inbox_messages')
+          .insert({
+            user_id: selectedViewer,
+            titre: titre.trim(),
+            contenu: contenu.trim(),
+            is_read: false,
+          });
 
-        setTimeout(() => {
-          setMessage(null);
-        }, 3000);
+        if (error) {
+          console.error('Error sending message:', error);
+          setMessage({ type: 'error', text: 'Erreur lors de l\'envoi du message' });
+        } else {
+          setMessage({ type: 'success', text: 'Message envoyé avec succès' });
+          setSelectedViewer('');
+          setTitre('');
+          setContenu('');
+          setTimeout(() => setMessage(null), 3000);
+        }
       }
     } catch (err) {
       console.error('Exception sending message:', err);
@@ -120,18 +143,31 @@ export function AdminMessages() {
               Chargement des utilisateurs...
             </div>
           ) : (
-            <select
-              value={selectedViewer}
-              onChange={(e) => setSelectedViewer(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all bg-white"
-            >
-              <option value="">Sélectionnez un destinataire</option>
-              {viewers.map((viewer) => (
-                <option key={viewer.id} value={viewer.id}>
-                  {viewer.name} ({viewer.email})
-                </option>
-              ))}
-            </select>
+            <>
+              <select
+                value={selectedViewer}
+                onChange={(e) => setSelectedViewer(e.target.value)}
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all bg-white"
+              >
+                <option value="">Sélectionnez un destinataire</option>
+                {viewers.length > 0 && (
+                  <option value={BROADCAST_VALUE}>
+                    Tous les utilisateurs ({viewers.length})
+                  </option>
+                )}
+                {viewers.map((viewer) => (
+                  <option key={viewer.id} value={viewer.id}>
+                    {viewer.name} ({viewer.email})
+                  </option>
+                ))}
+              </select>
+              {isBroadcast && (
+                <p className="text-sm text-orange-600 mt-2 flex items-center gap-1.5">
+                  <Users className="w-4 h-4" />
+                  Le message sera envoyé à {viewers.length} utilisateur{viewers.length > 1 ? 's' : ''}
+                </p>
+              )}
+            </>
           )}
           {!isLoading && viewers.length === 0 && (
             <p className="text-sm text-gray-500 mt-2">Aucun utilisateur disponible</p>
@@ -166,7 +202,7 @@ export function AdminMessages() {
 
         <button
           onClick={handleSendMessage}
-          disabled={isSending || !selectedViewer || !titre.trim() || !contenu.trim()}
+          disabled={isSending || !selectedViewer || !titre.trim() || !contenu.trim() || (isBroadcast && viewers.length === 0)}
           className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-orange-500 text-white rounded-xl hover:bg-orange-600 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isSending ? (
@@ -177,7 +213,7 @@ export function AdminMessages() {
           ) : (
             <>
               <Send className="w-5 h-5" />
-              <span>Envoyer</span>
+              <span>{isBroadcast ? 'Envoyer à tous' : 'Envoyer'}</span>
             </>
           )}
         </button>
