@@ -3,9 +3,9 @@ import { CreditCard, Shield, Clock, ChevronRight, Send, AlertCircle, CheckCircle
 import { useApp } from '../../context/AppContext';
 
 const features = [
-  { icon: CreditCard, title: 'Credits adaptes', description: 'Des solutions de financement sur mesure' },
-  { icon: Shield, title: 'Securite', description: 'Vos donnees sont protegees' },
-  { icon: Clock, title: 'Reponse rapide', description: 'Traitement de votre demande sous 48h' },
+  { icon: CreditCard, title: 'Crédits adaptés', description: 'Des solutions de financement sur mesure' },
+  { icon: Shield, title: 'Sécurité', description: 'Vos données sont protégées' },
+  { icon: Clock, title: 'Réponse rapide', description: 'Traitement de votre demande sous 48h' },
 ];
 
 type AuthMode = 'login' | 'register';
@@ -59,10 +59,10 @@ export function Landing() {
           <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
             <CheckCircle className="w-10 h-10 text-green-600" />
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-3">Demande envoyee</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-3">Demande envoyée</h2>
           <p className="text-gray-500 mb-8">
-            Merci pour votre interet. Un conseiller Wallfin vous contactera
-            dans les plus brefs delais pour etudier votre demande.
+            Merci pour votre intérêt. Un conseiller Wallfin vous contactera
+            dans les plus brefs délais pour étudier votre demande.
           </p>
           <button
             onClick={() => {
@@ -71,7 +71,7 @@ export function Landing() {
             }}
             className="px-8 py-3 bg-orange-500 text-white rounded-xl hover:bg-orange-600 transition-colors font-medium"
           >
-            Retour a l'accueil
+            Retour à l'accueil
           </button>
         </div>
       </div>
@@ -99,7 +99,7 @@ export function Landing() {
         </header>
 
         <main className="max-w-lg mx-auto px-4 py-8">
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Demande de credit</h1>
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">Demande de crédit</h1>
           <p className="text-gray-500 mb-8">Remplissez le formulaire et nous vous contacterons rapidement</p>
 
           <form onSubmit={handleSubmit} className="space-y-5">
@@ -128,7 +128,7 @@ export function Landing() {
             </div>
 
             <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">Telephone</label>
+              <label className="block text-sm font-medium text-gray-700">Téléphone</label>
               <input
                 type="tel"
                 value={formData.phone}
@@ -144,7 +144,7 @@ export function Landing() {
               <textarea
                 value={formData.message}
                 onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                placeholder="Decrivez votre projet de financement..."
+                placeholder="Décrivez votre projet de financement..."
                 rows={4}
                 className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all resize-none"
                 required
@@ -154,9 +154,9 @@ export function Landing() {
             <div className="bg-orange-50 border border-orange-100 rounded-xl p-4 flex gap-3">
               <AlertCircle className="w-5 h-5 text-orange-500 flex-shrink-0 mt-0.5" />
               <p className="text-orange-700 text-xs leading-relaxed">
-                Cette demande est soumise a titre indicatif. L'acceptation de votre dossier
-                depend de l'etude de votre situation financiere. Un credit vous engage et
-                doit etre rembourse.
+                Cette demande est soumise à titre indicatif. L'acceptation de votre dossier
+                dépend de l'étude de votre situation financière. Un crédit vous engage et
+                doit être remboursé.
               </p>
             </div>
 
@@ -210,8 +210,8 @@ export function Landing() {
             </h1>
             <p className="text-gray-500">
               {authMode === 'login'
-                ? 'Accedez a votre espace client'
-                : 'Creez votre compte en quelques minutes'}
+                ? 'Accédez à votre espace client'
+                : 'Créez votre compte en quelques minutes'}
             </p>
           </div>
 
@@ -243,7 +243,7 @@ export function Landing() {
               <>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Prenom</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Prénom</label>
                     <div className="relative">
                       <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                       <input
@@ -269,7 +269,7 @@ export function Landing() {
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Telephone</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Téléphone</label>
                   <div className="relative">
                     <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                     <input
@@ -333,7 +333,7 @@ export function Landing() {
                   <span>Chargement...</span>
                 </>
               ) : (
-                <span>{authMode === 'login' ? 'Se connecter' : 'Creer mon compte'}</span>
+                <span>{authMode === 'login' ? 'Se connecter' : 'Créer mon compte'}</span>
               )}
             </button>
           </form>
@@ -343,7 +343,7 @@ export function Landing() {
               onClick={handleDemoLogin}
               className="text-sm text-orange-600 hover:text-orange-700 font-medium"
             >
-              Acceder en mode demonstration
+              Accéder en mode démonstration
             </button>
           </div>
         </main>
@@ -361,7 +361,7 @@ export function Landing() {
             </div>
             <div>
               <h1 className="text-xl font-bold text-white">Wallfin</h1>
-              <p className="text-xs text-gray-400">Solutions de credit</p>
+              <p className="text-xs text-gray-400">Solutions de crédit</p>
             </div>
           </div>
         </div>
@@ -374,7 +374,7 @@ export function Landing() {
             <span className="text-orange-400">Espace Client</span>
           </h2>
           <p className="text-gray-400">
-            Gerez vos credits, suivez vos remboursements et faites vos demandes en toute simplicite
+            Gérez vos crédits, suivez vos remboursements et faites vos demandes en toute simplicité
           </p>
         </div>
 
@@ -400,7 +400,7 @@ export function Landing() {
             onClick={() => setShowAuth(true)}
             className="w-full flex items-center justify-center gap-2 px-6 py-4 bg-orange-500 text-white rounded-xl hover:bg-orange-600 transition-colors font-medium"
           >
-            <span>Acceder a mon espace</span>
+            <span>Accéder à mon espace</span>
             <ChevronRight className="w-5 h-5" />
           </button>
 
@@ -414,8 +414,8 @@ export function Landing() {
         </div>
 
         <p className="text-center text-gray-500 text-xs mt-8">
-          Un credit vous engage et doit etre rembourse.<br />
-          Verifiez vos capacites de remboursement avant de vous engager.
+          Un crédit vous engage et doit être remboursé.<br />
+          Vérifiez vos capacités de remboursement avant de vous engager.
         </p>
       </main>
     </div>

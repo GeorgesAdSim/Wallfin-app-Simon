@@ -76,9 +76,9 @@ export function Profile() {
   const roleLabel = profile.role === 'admin' ? 'Administrateur' : profile.role === 'manager' ? 'Manager' : 'Client';
 
   const profileItems = [
-    { icon: User, label: 'Nom complet', value: profile.name || 'Non renseigne' },
+    { icon: User, label: 'Nom complet', value: profile.name || 'Non renseigné' },
     { icon: Mail, label: 'Email', value: profile.email },
-    { icon: Shield, label: 'Role', value: roleLabel },
+    { icon: Shield, label: 'Rôle', value: roleLabel },
     { icon: Calendar, label: 'Membre depuis', value: formatDate(profile.created_at) },
   ];
 
@@ -152,7 +152,7 @@ export function Profile() {
 
           <div className="bg-gray-50 rounded-xl p-4">
             <p className="text-xs text-gray-500">
-              <strong>Note :</strong> L'email et le role ne peuvent pas etre modifies depuis cette interface.
+              <strong>Note :</strong> L'email et le rôle ne peuvent pas être modifiés depuis cette interface.
               Contactez le service client pour toute modification.
             </p>
           </div>
@@ -244,7 +244,7 @@ export function Profile() {
         className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-colors"
       >
         <LogOut className="w-5 h-5" />
-        <span className="font-medium">Se deconnecter</span>
+        <span className="font-medium">Se déconnecter</span>
       </button>
 
       {profile.role === 'admin' && (

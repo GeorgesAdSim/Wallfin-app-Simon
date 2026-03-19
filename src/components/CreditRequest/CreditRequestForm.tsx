@@ -7,7 +7,7 @@ import { StepProject, StepSituation, StepCharges, StepVerifications, StepRecap }
 import { calculerMensualite, validerDemande, generateRequestNumber } from '../../utils/calculations';
 import { supabase } from '../../lib/supabase';
 
-const STEP_LABELS = ['Projet', 'Situation', 'Charges', 'Verifications', 'Recapitulatif'];
+const STEP_LABELS = ['Projet', 'Situation', 'Charges', 'Vérifications', 'Récapitulatif'];
 
 const initialFormData: CreditRequestFormData = {
   creditType: '',
@@ -54,20 +54,20 @@ export function CreditRequestForm() {
 
     switch (step) {
       case 1:
-        if (!formData.creditType) newErrors.creditType = 'Selectionnez un type de credit';
+        if (!formData.creditType) newErrors.creditType = 'Sélectionnez un type de crédit';
         if (!formData.amount || formData.amount < 5001) newErrors.amount = 'Montant minimum: 5.001 EUR';
         if (formData.amount > 100000) newErrors.amount = 'Montant maximum: 100.000 EUR';
-        if (!formData.durationMonths) newErrors.durationMonths = 'Selectionnez une duree';
+        if (!formData.durationMonths) newErrors.durationMonths = 'Sélectionnez une durée';
         break;
       case 2:
-        if (!formData.employmentStatus) newErrors.employmentStatus = 'Selectionnez votre situation';
+        if (!formData.employmentStatus) newErrors.employmentStatus = 'Sélectionnez votre situation';
         if (!formData.monthlyIncome || formData.monthlyIncome <= 0) newErrors.monthlyIncome = 'Indiquez vos revenus';
-        if (!formData.familyStatus) newErrors.familyStatus = 'Selectionnez votre situation familiale';
+        if (!formData.familyStatus) newErrors.familyStatus = 'Sélectionnez votre situation familiale';
         break;
       case 4:
-        if (!formData.isBelgianResident) newErrors.isBelgianResident = 'Vous devez etre resident belge';
-        if (!formData.isNotBnbListed) newErrors.isNotBnbListed = 'Cette declaration est obligatoire';
-        if (!formData.acceptsDataProcessing) newErrors.acceptsDataProcessing = 'Vous devez accepter le traitement des donnees';
+        if (!formData.isBelgianResident) newErrors.isBelgianResident = 'Vous devez être résident belge';
+        if (!formData.isNotBnbListed) newErrors.isNotBnbListed = 'Cette déclaration est obligatoire';
+        if (!formData.acceptsDataProcessing) newErrors.acceptsDataProcessing = 'Vous devez accepter le traitement des données';
         break;
     }
 
@@ -93,7 +93,7 @@ export function CreditRequestForm() {
     try {
       const calculation = calculerMensualite(formData.amount, formData.durationMonths);
       if (!calculation) {
-        throw new Error('Erreur de calcul de la mensualite');
+        throw new Error('Erreur de calcul de la mensualité');
       }
 
       const charges = formData.rentMortgage + formData.currentCredits + formData.otherCharges;
@@ -125,7 +125,7 @@ export function CreditRequestForm() {
         calculated_debt_ratio: validation.tauxEndettement,
         calculated_remaining_income: validation.resteAVivre,
         feasibility_status: validation.status,
-        contact_name: formData.contactName || client?.name || 'Non renseigne',
+        contact_name: formData.contactName || client?.name || 'Non renseigné',
         contact_email: formData.contactEmail || client?.email || 'non-renseigne@email.com',
         contact_phone: formData.contactPhone || '',
         is_belgian_resident: formData.isBelgianResident,
@@ -171,14 +171,14 @@ export function CreditRequestForm() {
           <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
             <CheckCircle className="w-10 h-10 text-green-600" />
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Demande envoyee</h2>
-          <p className="text-gray-500 mb-4">Votre demande a ete transmise avec succes</p>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Demande envoyée</h2>
+          <p className="text-gray-500 mb-4">Votre demande a été transmise avec succès</p>
           <div className="bg-gray-100 rounded-xl px-6 py-4 inline-block mb-6">
-            <p className="text-sm text-gray-500 mb-1">Numero de demande</p>
+            <p className="text-sm text-gray-500 mb-1">Numéro de demande</p>
             <p className="text-xl font-bold text-gray-900">{submittedRequestNumber}</p>
           </div>
           <p className="text-sm text-gray-500 mb-8">
-            Un conseiller Wallfin vous contactera dans les plus brefs delais pour finaliser votre dossier.
+            Un conseiller Wallfin vous contactera dans les plus brefs délais pour finaliser votre dossier.
           </p>
           <div className="flex gap-3 justify-center">
             <button
@@ -191,7 +191,7 @@ export function CreditRequestForm() {
               onClick={() => navigateTo('dashboard')}
               className="px-6 py-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-colors font-medium"
             >
-              Retour a l'accueil
+              Retour à l'accueil
             </button>
           </div>
         </div>
@@ -228,8 +228,8 @@ export function CreditRequestForm() {
       </button>
 
       <div>
-        <h2 className="text-xl font-bold text-gray-900">Nouvelle demande de credit</h2>
-        <p className="text-sm text-slate-600">Completez le formulaire en {STEP_LABELS.length} etapes</p>
+        <h2 className="text-xl font-bold text-gray-900">Nouvelle demande de crédit</h2>
+        <p className="text-sm text-slate-600">Complétez le formulaire en {STEP_LABELS.length} étapes</p>
       </div>
 
       <StepIndicator
@@ -246,17 +246,17 @@ export function CreditRequestForm() {
         {currentStep > 1 && (
           <button
             onClick={handlePrev}
-            aria-label={`Retour a l'etape ${currentStep - 1}`}
+            aria-label={`Retour à l'étape ${currentStep - 1}`}
             className="flex-1 flex items-center justify-center gap-2 px-6 min-h-[56px] bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-colors font-medium text-base"
           >
             <ArrowLeft className="w-5 h-5" aria-hidden="true" />
-            <span>Precedent</span>
+            <span>Précédent</span>
           </button>
         )}
         {currentStep < 5 ? (
           <button
             onClick={handleNext}
-            aria-label={`Passer a l'etape ${currentStep + 1}`}
+            aria-label={`Passer à l'étape ${currentStep + 1}`}
             className="flex-1 flex items-center justify-center gap-2 px-6 min-h-[56px] bg-orange-500 text-white rounded-xl hover:bg-orange-600 transition-colors font-medium text-base"
           >
             <span>Suivant</span>
@@ -266,7 +266,7 @@ export function CreditRequestForm() {
           <button
             onClick={handleSubmit}
             disabled={isSubmitting}
-            aria-label="Envoyer ma demande de credit"
+            aria-label="Envoyer ma demande de crédit"
             aria-busy={isSubmitting}
             className="flex-1 flex items-center justify-center gap-2 px-6 min-h-[56px] bg-orange-500 text-white rounded-xl hover:bg-orange-600 transition-colors font-semibold text-lg disabled:opacity-50 disabled:cursor-not-allowed"
           >

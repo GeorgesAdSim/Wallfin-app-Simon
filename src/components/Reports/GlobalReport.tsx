@@ -73,7 +73,7 @@ export function GlobalReport() {
             </button>
             <div>
               <h1 className="text-xl font-bold text-slate-900">Rapport global</h1>
-              <p className="text-sm text-slate-500">Vue d'ensemble de vos credits</p>
+              <p className="text-sm text-slate-500">Vue d'ensemble de vos crédits</p>
             </div>
           </div>
         </div>
@@ -83,27 +83,27 @@ export function GlobalReport() {
         <div className="bg-slate-800 rounded-xl p-6 text-white">
           <div className="flex items-center gap-2 mb-4">
             <TrendingUp className="w-5 h-5 text-orange-400" />
-            <h2 className="text-lg font-semibold">Resume financier</h2>
+            <h2 className="text-lg font-semibold">Résumé financier</h2>
           </div>
 
           <div className="space-y-4">
             <div className="flex justify-between items-center">
-              <span className="text-slate-400">Total emprunte</span>
+              <span className="text-slate-400">Total emprunté</span>
               <span className="text-xl font-bold">{formatAmount(totalEmprunte)}</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-slate-400">Total restant a rembourser</span>
+              <span className="text-slate-400">Total restant à rembourser</span>
               <span className="text-xl font-bold">{formatAmount(totalRestant)}</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-slate-400">Total deja rembourse</span>
+              <span className="text-slate-400">Total déjà remboursé</span>
               <span className="text-xl font-bold text-green-400">{formatAmount(totalRembourse)}</span>
             </div>
 
             <div className="pt-4 border-t border-slate-700">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-sm text-slate-400">Progression globale</span>
-                <span className="text-sm font-semibold text-green-400">{pourcentageGlobal}% rembourse</span>
+                <span className="text-sm font-semibold text-green-400">{pourcentageGlobal}% remboursé</span>
               </div>
               <div
                 className="w-full h-3 rounded-full overflow-hidden"
@@ -128,7 +128,7 @@ export function GlobalReport() {
           </div>
 
           <div className="mb-4 pb-4 border-b border-slate-100">
-            <div className="text-sm text-slate-500 mb-1">Mensualites totales</div>
+            <div className="text-sm text-slate-500 mb-1">Mensualités totales</div>
             <div className="text-2xl font-bold text-slate-900">{formatAmount(mensualitesTotales)}/mois</div>
           </div>
 
@@ -148,7 +148,7 @@ export function GlobalReport() {
         <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-100">
           <div className="flex items-center gap-2 mb-4">
             <Calendar className="w-5 h-5 text-orange-500" />
-            <h2 className="text-lg font-semibold text-slate-900">Echeances de vos credits</h2>
+            <h2 className="text-lg font-semibold text-slate-900">Échéances de vos crédits</h2>
           </div>
 
           <div className="relative pl-6">
@@ -167,7 +167,7 @@ export function GlobalReport() {
                       <span className="font-semibold text-slate-900">{credit.type}</span>
                     </div>
                     <div className="text-sm text-slate-600">
-                      Fin prevue : {formatDate(credit.date_fin)}
+                      Fin prévue : {formatDate(credit.date_fin)}
                     </div>
                     <div className="text-sm text-slate-500">
                       Reste {credit.echeances_restantes} mois
@@ -182,7 +182,7 @@ export function GlobalReport() {
         <div className="bg-orange-50 rounded-xl p-6 border border-orange-100">
           <div className="flex items-center gap-2 mb-4">
             <Calendar className="w-5 h-5 text-orange-600" />
-            <h2 className="text-lg font-semibold text-slate-900">Prochains prelevements</h2>
+            <h2 className="text-lg font-semibold text-slate-900">Prochains prélèvements</h2>
           </div>
 
           <div className="space-y-4">
@@ -205,7 +205,7 @@ export function GlobalReport() {
         <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-100">
           <div className="flex items-center gap-2 mb-4">
             <PieChart className="w-5 h-5 text-orange-500" />
-            <h2 className="text-lg font-semibold text-slate-900">Repartition de vos credits</h2>
+            <h2 className="text-lg font-semibold text-slate-900">Répartition de vos crédits</h2>
           </div>
 
           <div className="space-y-4">
@@ -242,7 +242,7 @@ export function GlobalReport() {
         </div>
 
         <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-100">
-          <h2 className="text-lg font-semibold text-slate-900 mb-4">Voir le detail</h2>
+          <h2 className="text-lg font-semibold text-slate-900 mb-4">Voir le détail</h2>
 
           <div className="space-y-3">
             {credits.map((credit) => (
@@ -266,7 +266,7 @@ export function GlobalReport() {
 
         <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
           <p className="text-amber-800 text-xs leading-relaxed text-center">
-            Les montants et dates affiches sont donnes a titre indicatif et peuvent differer des informations contractuelles. Seuls les documents officiels fournis par Wallfin font foi.
+            Les montants et dates affichés sont donnés à titre indicatif et peuvent différer des informations contractuelles. Seuls les documents officiels fournis par Wallfin font foi.
           </p>
         </div>
       </div>

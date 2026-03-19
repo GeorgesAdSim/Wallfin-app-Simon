@@ -57,18 +57,18 @@ export function SimpleDashboard() {
         </h1>
 
         <div className="bg-slate-800 rounded-xl p-6 mb-6 text-white">
-          <div className="mb-2" style={{ fontSize: '14px', color: '#94A3B8' }}>Total restant a rembourser</div>
+          <div className="mb-2" style={{ fontSize: '14px', color: '#94A3B8' }}>Total restant à rembourser</div>
           <div className="text-4xl font-bold mb-4">{formatAmount(totalRestantDu)}</div>
 
           <div className="h-px bg-slate-700 my-4" />
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <div className="mb-1" style={{ fontSize: '14px', color: '#94A3B8' }}>Mensualites totales</div>
+              <div className="mb-1" style={{ fontSize: '14px', color: '#94A3B8' }}>Mensualités totales</div>
               <div className="text-xl font-semibold">{formatAmount(totalMensualites)}</div>
             </div>
             <div>
-              <div className="mb-1" style={{ fontSize: '14px', color: '#94A3B8' }}>Deja rembourse</div>
+              <div className="mb-1" style={{ fontSize: '14px', color: '#94A3B8' }}>Déjà remboursé</div>
               <div className="text-xl font-semibold text-green-400">{formatAmount(totalDejaRembourse)}</div>
             </div>
           </div>

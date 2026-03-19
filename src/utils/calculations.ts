@@ -176,21 +176,21 @@ export function generateRequestNumber(): string {
 }
 
 export const CREDIT_TYPES = [
-  { value: 'pret_personnel', label: 'Pret Personnel' },
-  { value: 'credit_personnel', label: 'Credit Personnel' },
-  { value: 'credit_auto', label: 'Credit Auto' },
-  { value: 'pret_travaux', label: 'Pret Travaux' },
-  { value: 'credit_energie', label: 'Credit Energie' },
-  { value: 'pret_vacances', label: 'Pret Vacances' },
-  { value: 'regroupement', label: 'Regroupement de Credits' }
+  { value: 'pret_personnel', label: 'Prêt Personnel' },
+  { value: 'credit_personnel', label: 'Crédit Personnel' },
+  { value: 'credit_auto', label: 'Crédit Auto' },
+  { value: 'pret_travaux', label: 'Prêt Travaux' },
+  { value: 'credit_energie', label: 'Crédit Énergie' },
+  { value: 'pret_vacances', label: 'Prêt Vacances' },
+  { value: 'regroupement', label: 'Regroupement de Crédits' }
 ];
 
 export const EMPLOYMENT_STATUSES = [
   { value: 'cdi', label: 'CDI' },
   { value: 'cdd', label: 'CDD' },
-  { value: 'independant', label: 'Independant' },
+  { value: 'independant', label: 'Indépendant' },
   { value: 'fonctionnaire', label: 'Fonctionnaire' },
-  { value: 'retraite', label: 'Retraite' },
+  { value: 'retraite', label: 'Retraité' },
   { value: 'sans_emploi', label: 'Sans emploi' }
 ];
 

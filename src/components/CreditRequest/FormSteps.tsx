@@ -47,13 +47,13 @@ export function StepProject({ formData, updateFormData, errors }: StepProps) {
     <div className="space-y-6">
       <div>
         <h3 className="text-lg font-semibold text-gray-900 mb-1">Votre projet</h3>
-        <p className="text-sm text-slate-600">Decrivez le credit que vous souhaitez obtenir</p>
+        <p className="text-sm text-slate-600">Décrivez le crédit que vous souhaitez obtenir</p>
       </div>
 
       <div className="space-y-5">
         <div>
           <label htmlFor={creditTypeId} className="block text-sm font-medium text-slate-700 mb-2">
-            Type de credit <span className="text-red-600" aria-hidden="true">*</span>
+            Type de crédit <span className="text-red-600" aria-hidden="true">*</span>
             <span className="sr-only">(obligatoire)</span>
           </label>
           <select
@@ -66,7 +66,7 @@ export function StepProject({ formData, updateFormData, errors }: StepProps) {
               errors.creditType ? 'border-red-500' : 'border-gray-200'
             } focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all bg-white`}
           >
-            <option value="">Selectionnez un type</option>
+            <option value="">Sélectionnez un type</option>
             {CREDIT_TYPES.map((type) => (
               <option key={type.value} value={type.value}>
                 {type.label}
@@ -78,7 +78,7 @@ export function StepProject({ formData, updateFormData, errors }: StepProps) {
 
         <div>
           <label htmlFor={amountId} className="block text-sm font-medium text-slate-700 mb-2">
-            Montant souhaite <span className="text-red-600" aria-hidden="true">*</span>
+            Montant souhaité <span className="text-red-600" aria-hidden="true">*</span>
             <span className="sr-only">(obligatoire)</span>
           </label>
           <div className="relative">
@@ -113,7 +113,7 @@ export function StepProject({ formData, updateFormData, errors }: StepProps) {
 
         <div>
           <label htmlFor={durationId} className="block text-sm font-medium text-slate-700 mb-2">
-            Duree souhaitee <span className="text-red-600" aria-hidden="true">*</span>
+            Durée souhaitée <span className="text-red-600" aria-hidden="true">*</span>
             <span className="sr-only">(obligatoire)</span>
           </label>
           <select
@@ -138,13 +138,13 @@ export function StepProject({ formData, updateFormData, errors }: StepProps) {
 
         <div>
           <label htmlFor={descriptionId} className="block text-sm font-medium text-slate-700 mb-2">
-            Description du projet (optionnel)
+            Description du projet (optionnelle)
           </label>
           <textarea
             id={descriptionId}
             value={formData.projectDescription}
             onChange={(e) => updateFormData({ projectDescription: e.target.value })}
-            placeholder="Decrivez votre projet..."
+            placeholder="Décrivez votre projet..."
             rows={3}
             className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all resize-none text-base"
           />
@@ -187,7 +187,7 @@ export function StepSituation({ formData, updateFormData, errors }: StepProps) {
               errors.employmentStatus ? 'border-red-500' : 'border-gray-200'
             } focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all bg-white`}
           >
-            <option value="">Selectionnez</option>
+            <option value="">Sélectionnez</option>
             {EMPLOYMENT_STATUSES.map((status) => (
               <option key={status.value} value={status.value}>
                 {status.label}
@@ -237,7 +237,7 @@ export function StepSituation({ formData, updateFormData, errors }: StepProps) {
               errors.familyStatus ? 'border-red-500' : 'border-gray-200'
             } focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all bg-white`}
           >
-            <option value="">Selectionnez</option>
+            <option value="">Sélectionnez</option>
             {FAMILY_STATUSES.map((status) => (
               <option key={status.value} value={status.value}>
                 {status.label}
@@ -290,7 +290,7 @@ export function StepCharges({ formData, updateFormData }: StepProps) {
       <div className="space-y-5">
         <div>
           <label htmlFor={rentId} className="block text-sm font-medium text-slate-700 mb-2">
-            Loyer / Hypotheque mensuel
+            Loyer / Hypothèque mensuel
           </label>
           <div className="relative">
             <input
@@ -309,7 +309,7 @@ export function StepCharges({ formData, updateFormData }: StepProps) {
 
         <div>
           <label htmlFor={creditsId} className="block text-sm font-medium text-slate-700 mb-2">
-            Credits en cours (mensualites totales)
+            Crédits en cours (mensualités totales)
           </label>
           <div className="relative">
             <input
@@ -367,12 +367,12 @@ export function StepVerifications({ formData, updateFormData, errors }: StepProp
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg font-semibold text-gray-900 mb-1">Verifications</h3>
+        <h3 className="text-lg font-semibold text-gray-900 mb-1">Vérifications</h3>
         <p className="text-sm text-slate-600">Confirmez les informations suivantes</p>
       </div>
 
       <div className="space-y-4" role="group" aria-labelledby="verifications-group">
-        <span id="verifications-group" className="sr-only">Declarations obligatoires</span>
+        <span id="verifications-group" className="sr-only">Déclarations obligatoires</span>
 
         <div>
           <label
@@ -391,8 +391,8 @@ export function StepVerifications({ formData, updateFormData, errors }: StepProp
               className="mt-1 w-5 h-5 min-w-[20px] text-orange-500 border-gray-300 rounded focus:ring-orange-500"
             />
             <div>
-              <p className="font-medium text-gray-900">Je suis resident(e) belge</p>
-              <p className="text-sm text-slate-600">Je confirme resider en Belgique</p>
+              <p className="font-medium text-gray-900">Je suis résident(e) belge</p>
+              <p className="text-sm text-slate-600">Je confirme résider en Belgique</p>
             </div>
           </label>
           {errors.isBelgianResident && <ErrorMessage message={errors.isBelgianResident} id={belgianErrorId} />}
@@ -415,8 +415,8 @@ export function StepVerifications({ formData, updateFormData, errors }: StepProp
               className="mt-1 w-5 h-5 min-w-[20px] text-orange-500 border-gray-300 rounded focus:ring-orange-500"
             />
             <div>
-              <p className="font-medium text-gray-900">Je ne suis pas fiche(e) a la BNB</p>
-              <p className="text-sm text-slate-600">Je declare ne pas etre inscrit(e) au fichier de la Banque Nationale de Belgique</p>
+              <p className="font-medium text-gray-900">Je ne suis pas fiché(e) à la BNB</p>
+              <p className="text-sm text-slate-600">Je déclare ne pas être inscrit(e) au fichier de la Banque Nationale de Belgique</p>
             </div>
           </label>
           {errors.isNotBnbListed && <ErrorMessage message={errors.isNotBnbListed} id={bnbErrorId} />}
@@ -439,8 +439,8 @@ export function StepVerifications({ formData, updateFormData, errors }: StepProp
               className="mt-1 w-5 h-5 min-w-[20px] text-orange-500 border-gray-300 rounded focus:ring-orange-500"
             />
             <div>
-              <p className="font-medium text-gray-900">J'accepte le traitement de mes donnees</p>
-              <p className="text-sm text-slate-600">J'accepte que mes donnees soient utilisees pour traiter ma demande de credit</p>
+              <p className="font-medium text-gray-900">J'accepte le traitement de mes données</p>
+              <p className="text-sm text-slate-600">J'accepte que mes données soient utilisées pour traiter ma demande de crédit</p>
             </div>
           </label>
           {errors.acceptsDataProcessing && <ErrorMessage message={errors.acceptsDataProcessing} id={dataErrorId} />}
@@ -450,7 +450,7 @@ export function StepVerifications({ formData, updateFormData, errors }: StepProp
       <div className="bg-orange-50 border border-orange-100 rounded-xl p-4 flex gap-3" role="alert">
         <AlertCircle className="w-5 h-5 text-orange-600 flex-shrink-0 mt-0.5" aria-hidden="true" />
         <p className="text-orange-800 text-sm leading-relaxed">
-          Un credit vous engage et doit etre rembourse. Verifiez vos capacites de remboursement avant de vous engager.
+          Un crédit vous engage et doit être remboursé. Vérifiez vos capacités de remboursement avant de vous engager.
         </p>
       </div>
     </div>
@@ -481,7 +481,7 @@ export function StepRecap({ formData }: { formData: CreditRequestFormData }) {
   const getStatusInfo = () => {
     if (!validation) return null;
     if (validation.status === 'OK') return { text: 'Faisable', ariaText: 'Demande faisable' };
-    if (validation.status === 'LIMIT') return { text: 'Limite', ariaText: 'Demande limite, sera etudiee au cas par cas' };
+    if (validation.status === 'LIMIT') return { text: 'Limite', ariaText: 'Demande limite, sera étudiée au cas par cas' };
     return { text: 'Non faisable', ariaText: 'Demande non faisable' };
   };
 
@@ -491,8 +491,8 @@ export function StepRecap({ formData }: { formData: CreditRequestFormData }) {
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg font-semibold text-gray-900 mb-1">Recapitulatif</h3>
-        <p className="text-sm text-slate-600">Verifiez vos informations avant envoi</p>
+        <h3 className="text-lg font-semibold text-gray-900 mb-1">Récapitulatif</h3>
+        <p className="text-sm text-slate-600">Vérifiez vos informations avant envoi</p>
       </div>
 
       {calculation && validation && (
@@ -527,17 +527,17 @@ export function StepRecap({ formData }: { formData: CreditRequestFormData }) {
                 {statusInfo?.text}
               </p>
               <p className="text-sm text-slate-700">
-                {validation.status === 'DEBT_HIGH' && 'Taux d\'endettement trop eleve (superieur a 33%)'}
-                {validation.status === 'INCOME_LOW' && `Reste a vivre insuffisant (minimum ${formatCurrency(minResteAVivre)})`}
-                {validation.status === 'LIMIT' && 'Votre dossier sera etudie au cas par cas'}
-                {validation.status === 'OK' && 'Votre demande respecte tous les criteres'}
+                {validation.status === 'DEBT_HIGH' && 'Taux d\'endettement trop élevé (supérieur à 33%)'}
+                {validation.status === 'INCOME_LOW' && `Reste à vivre insuffisant (minimum ${formatCurrency(minResteAVivre)})`}
+                {validation.status === 'LIMIT' && 'Votre dossier sera étudié au cas par cas'}
+                {validation.status === 'OK' && 'Votre demande respecte tous les critères'}
               </p>
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div className="bg-white/80 rounded-lg p-3">
-              <p className="text-sm font-medium text-slate-600 mb-1">Mensualite estimee</p>
+              <p className="text-sm font-medium text-slate-600 mb-1">Mensualité estimée</p>
               <p className="text-xl font-bold text-gray-900">{formatCurrency(calculation.mensualite)}</p>
               <p className="text-sm text-slate-600">TAEG: {calculation.taeg}%</p>
             </div>
@@ -546,10 +546,10 @@ export function StepRecap({ formData }: { formData: CreditRequestFormData }) {
               <p className={`text-xl font-bold ${validation.tauxEndettement > 33 ? 'text-red-600' : 'text-gray-900'}`}>
                 {validation.tauxEndettement.toFixed(1)}%
               </p>
-              <p className="text-sm text-slate-600">Max recommande: 33%</p>
+              <p className="text-sm text-slate-600">Max recommandé : 33%</p>
             </div>
             <div className="bg-white/80 rounded-lg p-3 col-span-2">
-              <p className="text-sm font-medium text-slate-600 mb-1">Reste a vivre</p>
+              <p className="text-sm font-medium text-slate-600 mb-1">Reste à vivre</p>
               <p className={`text-xl font-bold ${validation.resteAVivre < minResteAVivre ? 'text-red-600' : 'text-gray-900'}`}>
                 {formatCurrency(validation.resteAVivre)}
               </p>
@@ -572,7 +572,7 @@ export function StepRecap({ formData }: { formData: CreditRequestFormData }) {
               <dd className="font-medium">{formatCurrency(formData.amount)}</dd>
             </div>
             <div className="flex justify-between">
-              <dt className="text-slate-700">Duree</dt>
+              <dt className="text-slate-700">Durée</dt>
               <dd className="font-medium">{formData.durationMonths} mois</dd>
             </div>
           </dl>
@@ -604,11 +604,11 @@ export function StepRecap({ formData }: { formData: CreditRequestFormData }) {
           <p id="recap-charges" className="text-sm font-medium text-slate-600 uppercase tracking-wider mb-2">Charges</p>
           <dl className="space-y-2">
             <div className="flex justify-between">
-              <dt className="text-slate-700">Loyer/Hypotheque</dt>
+              <dt className="text-slate-700">Loyer/Hypothèque</dt>
               <dd className="font-medium">{formatCurrency(formData.rentMortgage)}</dd>
             </div>
             <div className="flex justify-between">
-              <dt className="text-slate-700">Credits actuels</dt>
+              <dt className="text-slate-700">Crédits actuels</dt>
               <dd className="font-medium">{formatCurrency(formData.currentCredits)}</dd>
             </div>
             <div className="flex justify-between">

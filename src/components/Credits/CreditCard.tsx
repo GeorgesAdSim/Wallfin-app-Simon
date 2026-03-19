@@ -30,7 +30,7 @@ export function CreditCard({ credit, compact = false }: CreditCardProps) {
     return (
       <button
         onClick={handleClick}
-        aria-label={`Voir le detail du ${credit.type}, reference ${credit.reference_number}`}
+        aria-label={`Voir le détail du ${credit.type}, reference ${credit.reference_number}`}
         className="w-full bg-gray-900 rounded-2xl text-left hover:bg-gray-800 transition-colors group min-h-[120px]"
         style={{ padding: '20px' }}
       >
@@ -49,7 +49,7 @@ export function CreditCard({ credit, compact = false }: CreditCardProps) {
 
         <div className="space-y-2">
           <div className="flex justify-between" style={{ fontSize: '14px' }}>
-            <span className="text-gray-300">Mensualite</span>
+            <span className="text-gray-300">Mensualité</span>
             <span className="text-white font-semibold">{formatCurrency(credit.mensualite)}</span>
           </div>
           <div
@@ -58,7 +58,7 @@ export function CreditCard({ credit, compact = false }: CreditCardProps) {
             aria-valuenow={progress}
             aria-valuemin={0}
             aria-valuemax={100}
-            aria-label={`${progress.toFixed(0)} pourcent rembourse`}
+            aria-label={`${progress.toFixed(0)} pourcent remboursé`}
           >
             <div
               className="h-full bg-gradient-to-r from-orange-500 to-orange-400 rounded-full"
@@ -67,7 +67,7 @@ export function CreditCard({ credit, compact = false }: CreditCardProps) {
           </div>
           <div className="flex justify-between" style={{ fontSize: '14px' }}>
             <span style={{ color: '#94A3B8' }}>{credit.echeances_restantes} mois restants</span>
-            <span className="text-orange-400 font-medium">{progress.toFixed(0)}% rembourse</span>
+            <span className="text-orange-400 font-medium">{progress.toFixed(0)}% remboursé</span>
           </div>
         </div>
       </button>
@@ -77,7 +77,7 @@ export function CreditCard({ credit, compact = false }: CreditCardProps) {
   return (
     <button
       onClick={handleClick}
-      aria-label={`Voir le detail du ${credit.type}, reference ${credit.reference_number}`}
+      aria-label={`Voir le détail du ${credit.type}, reference ${credit.reference_number}`}
       className="w-full bg-gray-900 rounded-2xl text-left hover:bg-gray-800 transition-colors group min-h-[200px]"
       style={{ padding: '20px' }}
     >
@@ -96,15 +96,15 @@ export function CreditCard({ credit, compact = false }: CreditCardProps) {
 
       <div className="grid grid-cols-2 gap-4 mb-4">
         <div>
-          <p className="text-gray-300 font-medium mb-1" style={{ fontSize: '14px' }}>Montant emprunte</p>
+          <p className="text-gray-300 font-medium mb-1" style={{ fontSize: '14px' }}>Montant emprunté</p>
           <p className="text-white font-semibold">{formatCurrency(credit.montant_initial)}</p>
         </div>
         <div>
-          <p className="text-gray-300 font-medium mb-1" style={{ fontSize: '14px' }}>Reste a payer</p>
+          <p className="text-gray-300 font-medium mb-1" style={{ fontSize: '14px' }}>Reste à payer</p>
           <p className="text-white font-semibold">{formatCurrency(credit.restant_du)}</p>
         </div>
         <div>
-          <p className="text-gray-300 font-medium mb-1" style={{ fontSize: '14px' }}>Mensualite</p>
+          <p className="text-gray-300 font-medium mb-1" style={{ fontSize: '14px' }}>Mensualité</p>
           <p className="text-orange-400 font-semibold">{formatCurrency(credit.mensualite)}</p>
         </div>
         <div>
@@ -116,7 +116,7 @@ export function CreditCard({ credit, compact = false }: CreditCardProps) {
       <div className="space-y-2">
         <div className="flex justify-between" style={{ fontSize: '14px' }}>
           <span className="text-gray-300">Progression</span>
-          <span className="text-orange-400 font-medium">{formatCurrency(paidAmount)} rembourses</span>
+          <span className="text-orange-400 font-medium">{formatCurrency(paidAmount)} remboursés</span>
         </div>
         <div
           className="h-3 bg-gray-800 rounded-full overflow-hidden"
@@ -124,14 +124,14 @@ export function CreditCard({ credit, compact = false }: CreditCardProps) {
           aria-valuenow={progress}
           aria-valuemin={0}
           aria-valuemax={100}
-          aria-label={`${progress.toFixed(1)} pourcent du capital rembourse`}
+          aria-label={`${progress.toFixed(1)} pourcent du capital remboursé`}
         >
           <div
             className="h-full bg-gradient-to-r from-orange-500 to-orange-400 rounded-full"
             style={{ width: `${progress}%` }}
           />
         </div>
-        <p className="text-right" style={{ fontSize: '14px', color: '#94A3B8' }}>{progress.toFixed(1)}% du capital rembourse</p>
+        <p className="text-right" style={{ fontSize: '14px', color: '#94A3B8' }}>{progress.toFixed(1)}% du capital remboursé</p>
       </div>
     </button>
   );

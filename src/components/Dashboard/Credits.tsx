@@ -157,7 +157,7 @@ export function Credits() {
       return false;
     }
     if (num > maxAmount) {
-      setEarlyRepayment(prev => ({ ...prev, amountError: `Le montant ne peut pas depasser ${maxAmount.toLocaleString('fr-BE')} EUR` }));
+      setEarlyRepayment(prev => ({ ...prev, amountError: `Le montant ne peut pas dépasser ${maxAmount.toLocaleString('fr-BE')} EUR` }));
       return false;
     }
     setEarlyRepayment(prev => ({ ...prev, amountError: '' }));
@@ -293,14 +293,14 @@ export function Credits() {
                       {earlyRepayment.showSuccess && (
                         <div className="bg-green-500/20 border border-green-500/30 rounded-lg p-3 mb-3 flex items-start gap-2">
                           <CheckCircle className="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0" />
-                          <div className="text-green-300 text-sm">Demande envoyee avec succes</div>
+                          <div className="text-green-300 text-sm">Demande envoyée avec succès</div>
                         </div>
                       )}
 
                       {earlyRepayment.showError && (
                         <div className="bg-red-500/20 border border-red-500/30 rounded-lg p-3 mb-3 flex items-start gap-2">
                           <XCircle className="w-4 h-4 text-red-400 mt-0.5 flex-shrink-0" />
-                          <div className="text-red-300 text-sm">Erreur, veuillez reessayer</div>
+                          <div className="text-red-300 text-sm">Erreur, veuillez réessayer</div>
                         </div>
                       )}
 
@@ -340,7 +340,7 @@ export function Credits() {
 
                         {earlyRepayment.type === 'partial' && (
                           <div>
-                            <label className="block text-xs text-slate-400 mb-1.5">Montant a rembourser</label>
+                            <label className="block text-xs text-slate-400 mb-1.5">Montant à rembourser</label>
                             <div className="relative">
                               <input
                                 type="number"
@@ -368,7 +368,7 @@ export function Credits() {
                             onChange={(e) => setEarlyRepayment(prev => ({ ...prev, comment: e.target.value.slice(0, 200) }))}
                             rows={2}
                             className="w-full px-3 py-2 rounded-lg bg-slate-600 border border-slate-500 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-500 resize-none"
-                            placeholder="Precisions..."
+                            placeholder="Précisions..."
                             style={{ fontSize: '14px' }}
                           />
                         </div>

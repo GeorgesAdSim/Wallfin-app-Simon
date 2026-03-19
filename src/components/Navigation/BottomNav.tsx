@@ -8,7 +8,7 @@ export function BottomNav() {
   const navItems = [
     {
       id: 'profile' as ViewType,
-      label: 'Profile',
+      label: 'Profil',
       icon: User,
       ariaLabel: 'Voir mon profil',
     },
@@ -16,7 +16,7 @@ export function BottomNav() {
       id: 'credits' as ViewType,
       label: 'Crédits',
       icon: CreditCard,
-      ariaLabel: 'Voir mes credits',
+      ariaLabel: 'Voir mes crédits',
     },
     {
       id: 'messages' as ViewType,
@@ -29,7 +29,7 @@ export function BottomNav() {
       id: 'demandes' as ViewType,
       label: 'Demandes',
       icon: MessageCircle,
-      ariaLabel: 'Voir mes demandes de credit',
+      ariaLabel: 'Voir mes demandes de crédit',
     },
   ];
 

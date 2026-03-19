@@ -209,15 +209,15 @@ export function Demandes() {
   return (
     <div className="pb-20 px-4 py-6">
       <h1 className="text-2xl font-bold text-slate-900 mb-2">Contact</h1>
-      <p className="text-gray-600 mb-6" style={{ fontSize: '14px' }}>Envoyez une demande a l'equipe Wallfin</p>
+      <p className="text-gray-600 mb-6" style={{ fontSize: '14px' }}>Envoyez une demande à l'équipe Wallfin</p>
 
       {showSuccess && (
         <div className="bg-green-50 border border-green-200 rounded-xl p-4 mb-6 flex items-start gap-3">
           <CheckCircle className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
           <div className="flex-1">
-            <div className="font-semibold text-green-900 mb-1">Demande envoyee</div>
+            <div className="font-semibold text-green-900 mb-1">Demande envoyée</div>
             <div className="text-green-700" style={{ fontSize: '14px' }}>
-              Votre demande a bien ete envoyee. L'equipe Wallfin vous repondra dans les plus brefs delais.
+              Votre demande a bien été envoyée. L'équipe Wallfin vous répondra dans les plus brefs délais.
             </div>
           </div>
         </div>
@@ -229,7 +229,7 @@ export function Demandes() {
           <div className="flex-1">
             <div className="font-semibold text-red-900 mb-1">Erreur lors de l'envoi</div>
             <div className="text-red-700" style={{ fontSize: '14px' }}>
-              Veuillez reessayer ou nous appeler au{' '}
+              Veuillez réessayer ou nous appeler au{' '}
               <a href="tel:+3242281942" className="font-semibold underline">
                 +32 4 228 19 42
               </a>
@@ -257,7 +257,7 @@ export function Demandes() {
               style={{ height: '48px', fontSize: '16px', color: subject ? '#1e293b' : '#6B7280' }}
               required
             >
-              <option value="" style={{ color: '#6B7280' }}>Selectionnez un sujet</option>
+              <option value="" style={{ color: '#6B7280' }}>Sélectionnez un sujet</option>
               <option value="Demande d'argent supplémentaire" style={{ color: '#1e293b' }}>Demande d'argent supplémentaire</option>
               <option value="Question sur mon crédit" style={{ color: '#1e293b' }}>Question sur mon crédit</option>
               <option value="Problème technique" style={{ color: '#1e293b' }}>Problème technique</option>
@@ -269,7 +269,7 @@ export function Demandes() {
           {(subject === 'Question sur mon crédit' || isAdditionalMoneyRequest) && (
             <div>
               <label htmlFor="credit" className="block text-sm font-medium text-gray-600 mb-2" style={{ fontSize: '14px' }}>
-                Credit concerne *
+                Crédit concerné *
               </label>
               <select
                 id="credit"
@@ -279,7 +279,7 @@ export function Demandes() {
                 style={{ height: '48px', fontSize: '16px', color: creditId ? '#1e293b' : '#6B7280' }}
                 required
               >
-                <option value="" style={{ color: '#6B7280' }}>Selectionnez un credit</option>
+                <option value="" style={{ color: '#6B7280' }}>Sélectionnez un crédit</option>
                 {credits.map((credit) => (
                   <option key={credit.id} value={credit.id} style={{ color: '#1e293b' }}>
                     {credit.type} - {credit.reference_number}
@@ -292,7 +292,7 @@ export function Demandes() {
           {isAdditionalMoneyRequest && (
             <div>
               <label htmlFor="amount" className="block text-sm font-medium text-gray-600 mb-2" style={{ fontSize: '14px' }}>
-                Montant supplementaire souhaite *
+                Montant supplémentaire souhaité *
               </label>
               <div className="relative">
                 <input
@@ -331,7 +331,7 @@ export function Demandes() {
               onChange={(e) => setMessage(e.target.value.slice(0, 500))}
               rows={isAdditionalMoneyRequest ? 4 : 6}
               className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent resize-none placeholder-gray-500"
-              placeholder={isAdditionalMoneyRequest ? 'Decrivez votre besoin ou ajoutez des precisions...' : 'Decrivez votre demande...'}
+              placeholder={isAdditionalMoneyRequest ? 'Décrivez votre besoin ou ajoutez des précisions...' : 'Décrivez votre demande...'}
               style={{ minHeight: isAdditionalMoneyRequest ? '100px' : '150px', fontSize: '16px' }}
               required={!isAdditionalMoneyRequest}
             />
@@ -342,7 +342,7 @@ export function Demandes() {
 
           {isAdditionalMoneyRequest && (
             <p className="text-xs text-slate-500 text-center bg-slate-50 rounded-lg p-3">
-              Votre demande sera etudiee par l'equipe Wallfin qui vous recontactera dans les plus brefs delais.
+              Votre demande sera étudiée par l'équipe Wallfin qui vous recontactera dans les plus brefs délais.
             </p>
           )}
         </div>
@@ -369,7 +369,7 @@ export function Demandes() {
 
       <div className="mt-6 bg-slate-50 rounded-xl p-4">
         <p className="text-gray-600 text-center" style={{ fontSize: '14px' }}>
-          Vous pouvez aussi nous contacter par telephone au{' '}
+          Vous pouvez aussi nous contacter par téléphone au{' '}
           <a href="tel:+3242281942" className="text-orange-500 font-medium">
             +32 4 228 19 42
           </a>

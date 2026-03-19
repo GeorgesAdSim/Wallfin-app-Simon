@@ -24,21 +24,21 @@ export function Dashboard() {
       <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-5 text-white">
         <div className="flex items-center gap-2 mb-4">
           <Wallet className="w-5 h-5 text-orange-400" />
-          <span className="text-sm text-gray-400">Total restant a rembourser</span>
+          <span className="text-sm text-gray-400">Total restant à rembourser</span>
         </div>
         <p className="text-3xl font-bold mb-4">{formatCurrency(totalRemaining)}</p>
         <div className="grid grid-cols-2 gap-4 pt-4 border-t border-gray-700">
           <div>
             <div className="flex items-center gap-1 mb-1">
               <Calendar className="w-4 h-4 text-orange-400" />
-              <span className="text-xs text-gray-400">Mensualites totales</span>
+              <span className="text-xs text-gray-400">Mensualités totales</span>
             </div>
             <p className="text-lg font-semibold">{formatCurrency(totalMonthlyPayment)}</p>
           </div>
           <div>
             <div className="flex items-center gap-1 mb-1">
               <TrendingUp className="w-4 h-4 text-green-400" />
-              <span className="text-xs text-gray-400">Deja rembourse</span>
+              <span className="text-xs text-gray-400">Déjà remboursé</span>
             </div>
             <p className="text-lg font-semibold text-green-400">{formatCurrency(totalPaid)}</p>
           </div>
@@ -53,7 +53,7 @@ export function Dashboard() {
           <div className="w-10 h-10 bg-orange-100 rounded-xl flex items-center justify-center mb-3 group-hover:bg-orange-200 transition-colors">
             <Plus className="w-5 h-5 text-orange-600" />
           </div>
-          <p className="font-semibold text-gray-900 text-sm">Nouveau credit</p>
+          <p className="font-semibold text-gray-900 text-sm">Nouveau crédit</p>
           <p className="text-xs text-gray-500 mt-1">Faire une demande</p>
         </button>
         <button
@@ -64,13 +64,13 @@ export function Dashboard() {
             <ArrowRight className="w-5 h-5 text-gray-600" />
           </div>
           <p className="font-semibold text-gray-900 text-sm">Mes demandes</p>
-          <p className="text-xs text-gray-500 mt-1">Suivre mes requetes</p>
+          <p className="text-xs text-gray-500 mt-1">Suivre mes requêtes</p>
         </button>
       </div>
 
       <div>
         <div className="flex items-center justify-between mb-4">
-          <h2 className="font-bold text-gray-900">Mes credits en cours</h2>
+          <h2 className="font-bold text-gray-900">Mes crédits en cours</h2>
           <button
             onClick={() => navigateTo('credits')}
             className="text-sm text-orange-600 font-medium hover:text-orange-700"
@@ -90,7 +90,7 @@ export function Dashboard() {
             onClick={() => navigateTo('credits')}
             className="w-full mt-3 py-3 text-center text-sm text-gray-500 hover:text-gray-700 font-medium"
           >
-            + {credits.length - 2} autre{credits.length - 2 > 1 ? 's' : ''} credit{credits.length - 2 > 1 ? 's' : ''}
+            + {credits.length - 2} autre{credits.length - 2 > 1 ? 's' : ''} crédit{credits.length - 2 > 1 ? 's' : ''}
           </button>
         )}
       </div>

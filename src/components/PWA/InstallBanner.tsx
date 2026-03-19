@@ -63,7 +63,7 @@ export function InstallBanner() {
               Installer l'application
             </h3>
             <p className="text-slate-400 text-sm mb-4">
-              Accedez a vos credits meme hors ligne
+              Accédez à vos crédits même hors ligne
             </p>
 
             <div className="flex items-center gap-3">

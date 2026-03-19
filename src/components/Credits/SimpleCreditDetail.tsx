@@ -32,7 +32,7 @@ export function SimpleCreditDetail() {
       case 'en_attente':
         return { label: 'En attente', color: 'text-yellow-500', bgColor: 'bg-yellow-500' };
       case 'solde':
-        return { label: 'Solde', color: 'text-blue-500', bgColor: 'bg-blue-500' };
+        return { label: 'Soldé', color: 'text-blue-500', bgColor: 'bg-blue-500' };
       default:
         return { label: status, color: 'text-slate-500', bgColor: 'bg-slate-500' };
     }
@@ -133,7 +133,7 @@ export function SimpleCreditDetail() {
       }, 5000);
     } catch (error) {
       console.error('Error submitting additional money request:', error);
-      setAmountError('Une erreur est survenue. Veuillez reessayer.');
+      setAmountError('Une erreur est survenue. Veuillez réessayer.');
     } finally {
       setIsSubmitting(false);
     }
@@ -147,7 +147,7 @@ export function SimpleCreditDetail() {
             <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center flex-shrink-0">
               <Check className="w-5 h-5" />
             </div>
-            <p className="text-sm font-medium">Votre demande a bien ete envoyee. L'equipe Wallfin vous recontactera rapidement.</p>
+            <p className="text-sm font-medium">Votre demande a bien été envoyée. L'équipe Wallfin vous recontactera rapidement.</p>
           </div>
         </div>
       )}
@@ -160,7 +160,7 @@ export function SimpleCreditDetail() {
           >
             <ArrowLeft className="w-5 h-5 text-slate-700" />
           </button>
-          <h1 className="text-lg font-semibold text-slate-900">Detail du credit</h1>
+          <h1 className="text-lg font-semibold text-slate-900">Détail du crédit</h1>
         </div>
       </div>
 
@@ -191,28 +191,28 @@ export function SimpleCreditDetail() {
               />
             </div>
           </div>
-          <p className="text-center text-sm font-medium text-slate-600 mb-4">{progressPercentage}% rembourse</p>
+          <p className="text-center text-sm font-medium text-slate-600 mb-4">{progressPercentage}% remboursé</p>
           <div className="grid grid-cols-2 gap-4">
             <div className="text-center">
-              <p className="text-sm text-slate-500 mb-1">Deja rembourse</p>
+              <p className="text-sm text-slate-500 mb-1">Déjà remboursé</p>
               <p className="text-lg font-bold text-green-600">{formatCurrency(credit.deja_rembourse)}</p>
             </div>
             <div className="text-center">
-              <p className="text-sm text-slate-500 mb-1">Reste a payer</p>
+              <p className="text-sm text-slate-500 mb-1">Reste à payer</p>
               <p className="text-lg font-bold text-slate-900">{formatCurrency(credit.restant_du)}</p>
             </div>
           </div>
         </div>
 
         <div className="bg-white rounded-2xl p-5 shadow-sm">
-          <h3 className="text-base font-semibold text-slate-900 mb-4">Informations du credit</h3>
+          <h3 className="text-base font-semibold text-slate-900 mb-4">Informations du crédit</h3>
           <div className="space-y-4">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-slate-100 rounded-lg flex items-center justify-center">
                 <Wallet className="w-5 h-5 text-slate-600" />
               </div>
               <div className="flex-1">
-                <p className="text-sm text-slate-500">Montant emprunte</p>
+                <p className="text-sm text-slate-500">Montant emprunté</p>
                 <p className="font-semibold text-slate-900">{formatCurrency(credit.montant_initial)}</p>
               </div>
             </div>
@@ -221,7 +221,7 @@ export function SimpleCreditDetail() {
                 <Calendar className="w-5 h-5 text-slate-600" />
               </div>
               <div className="flex-1">
-                <p className="text-sm text-slate-500">Date de debut</p>
+                <p className="text-sm text-slate-500">Date de début</p>
                 <p className="font-semibold text-slate-900">{formatShortDate(credit.date_debut)}</p>
               </div>
             </div>
@@ -230,7 +230,7 @@ export function SimpleCreditDetail() {
                 <Flag className="w-5 h-5 text-slate-600" />
               </div>
               <div className="flex-1">
-                <p className="text-sm text-slate-500">Date de fin prevue</p>
+                <p className="text-sm text-slate-500">Date de fin prévue</p>
                 <p className="font-semibold text-slate-900">{formatShortDate(credit.date_fin)}</p>
               </div>
             </div>
@@ -239,7 +239,7 @@ export function SimpleCreditDetail() {
                 <Clock className="w-5 h-5 text-slate-600" />
               </div>
               <div className="flex-1">
-                <p className="text-sm text-slate-500">Duree totale</p>
+                <p className="text-sm text-slate-500">Durée totale</p>
                 <p className="font-semibold text-slate-900">{credit.duree_total} mois</p>
               </div>
             </div>
@@ -248,7 +248,7 @@ export function SimpleCreditDetail() {
                 <Calendar className="w-5 h-5 text-slate-600" />
               </div>
               <div className="flex-1">
-                <p className="text-sm text-slate-500">Echeances restantes</p>
+                <p className="text-sm text-slate-500">Échéances restantes</p>
                 <p className="font-semibold text-slate-900">{credit.echeances_restantes} mois</p>
               </div>
             </div>
@@ -257,7 +257,7 @@ export function SimpleCreditDetail() {
                 <CreditCard className="w-5 h-5 text-slate-600" />
               </div>
               <div className="flex-1">
-                <p className="text-sm text-slate-500">Mensualite</p>
+                <p className="text-sm text-slate-500">Mensualité</p>
                 <p className="font-semibold text-slate-900">{formatCurrency(credit.mensualite)}</p>
               </div>
             </div>
@@ -276,14 +276,14 @@ export function SimpleCreditDetail() {
         <div className="bg-white border-2 border-orange-200 rounded-2xl p-5">
           <div className="flex items-center gap-2 mb-1">
             <Plus className="w-5 h-5 text-orange-500" />
-            <h3 className="text-lg font-semibold text-slate-900">Demande d'argent supplementaire</h3>
+            <h3 className="text-lg font-semibold text-slate-900">Demande d'argent supplémentaire</h3>
           </div>
-          <p className="text-sm text-slate-500 mb-5">Besoin d'un montant supplementaire sur ce credit ?</p>
+          <p className="text-sm text-slate-500 mb-5">Besoin d'un montant supplémentaire sur ce crédit ?</p>
 
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-2">
-                Montant supplementaire souhaite *
+                Montant supplémentaire souhaité *
               </label>
               <div className="relative">
                 <input
@@ -314,7 +314,7 @@ export function SimpleCreditDetail() {
               <textarea
                 value={additionalComment}
                 onChange={(e) => setAdditionalComment(e.target.value.slice(0, 500))}
-                placeholder="Decrivez votre besoin ou ajoutez des precisions..."
+                placeholder="Décrivez votre besoin ou ajoutez des précisions..."
                 rows={3}
                 className="w-full border border-slate-200 rounded-lg px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-shadow resize-none"
               />
@@ -337,13 +337,13 @@ export function SimpleCreditDetail() {
             </button>
 
             <p className="text-xs text-slate-500 text-center">
-              Votre demande sera etudiee par l'equipe Wallfin qui vous recontactera dans les plus brefs delais.
+              Votre demande sera étudiée par l'équipe Wallfin qui vous recontactera dans les plus brefs délais.
             </p>
           </div>
         </div>
 
         <div className="bg-orange-50 border border-orange-200 rounded-2xl p-5">
-          <h3 className="text-base font-semibold text-slate-900 mb-3">Prochaine echeance</h3>
+          <h3 className="text-base font-semibold text-slate-900 mb-3">Prochaine échéance</h3>
           <p className="text-2xl font-bold text-slate-900 mb-1">{formatDate(credit.prochaine_echeance)}</p>
           <p className="text-xl font-semibold text-orange-600 mb-2">{formatCurrency(credit.mensualite)}</p>
           <p className="text-sm text-slate-600">
@@ -358,7 +358,7 @@ export function SimpleCreditDetail() {
         </div>
 
         <div className="bg-white rounded-2xl p-5 shadow-sm">
-          <h3 className="text-base font-semibold text-slate-900 mb-4">Mes prochaines echeances</h3>
+          <h3 className="text-base font-semibold text-slate-900 mb-4">Mes prochaines échéances</h3>
           <div className="space-y-3">
             {upcomingPayments.map((payment, index) => (
               <div key={index} className="flex items-center justify-between py-2 border-b border-slate-100 last:border-0">
@@ -368,7 +368,7 @@ export function SimpleCreditDetail() {
                 </div>
                 <div className="flex items-center gap-3">
                   <span className="font-semibold text-slate-900">{formatCurrency(payment.amount)}</span>
-                  <span className="text-xs text-yellow-600 bg-yellow-50 px-2 py-1 rounded-full">A venir</span>
+                  <span className="text-xs text-yellow-600 bg-yellow-50 px-2 py-1 rounded-full">À venir</span>
                 </div>
               </div>
             ))}
@@ -385,7 +385,7 @@ export function SimpleCreditDetail() {
                 </>
               ) : (
                 <>
-                  <span>Voir tout le calendrier ({credit.echeances_restantes} echeances)</span>
+                  <span>Voir tout le calendrier ({credit.echeances_restantes} échéances)</span>
                   <ChevronDown className="w-4 h-4" />
                 </>
               )}
@@ -395,13 +395,13 @@ export function SimpleCreditDetail() {
 
         <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
           <p className="text-amber-800 text-xs leading-relaxed text-center">
-            Informations indicatives. Les montants, dates et echeances affiches peuvent varier. Referez-vous a votre contrat de credit pour les donnees officielles.
+            Informations indicatives. Les montants, dates et échéances affichés peuvent varier. Référez-vous à votre contrat de crédit pour les données officielles.
           </p>
         </div>
 
         <div className="bg-white rounded-2xl p-5 shadow-sm">
           <h3 className="text-base font-semibold text-slate-900 mb-2">Besoin d'aide ?</h3>
-          <p className="text-sm text-slate-500 mb-4">Une question sur ce credit ?</p>
+          <p className="text-sm text-slate-500 mb-4">Une question sur ce crédit ?</p>
           <div className="space-y-3">
             <button
               onClick={handleContactClick}

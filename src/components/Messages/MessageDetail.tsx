@@ -29,7 +29,7 @@ export function MessageDetail() {
       hour: '2-digit',
       minute: '2-digit',
     });
-    return `${day} a ${time}`;
+    return `${day} à ${time}`;
   };
 
   const handleContactClick = () => {
@@ -64,7 +64,7 @@ export function MessageDetail() {
 
         <div className="bg-white rounded-2xl p-5 shadow-sm">
           <p className="text-sm text-slate-500 mb-4">
-            Ce message est envoye automatiquement. Pour toute question, contactez-nous.
+            Ce message est envoyé automatiquement. Pour toute question, contactez-nous.
           </p>
           <button
             onClick={handleContactClick}

@@ -5,9 +5,9 @@ import { creditTypeLabels } from '../../data/mockData';
 
 const creditRequestStatusConfig = {
   pending: { icon: Clock, label: 'En attente', className: 'text-yellow-600 bg-yellow-50' },
-  in_review: { icon: Loader, label: 'En cours d\'etude', className: 'text-blue-600 bg-blue-50' },
-  approved: { icon: CheckCircle, label: 'Acceptee', className: 'text-green-600 bg-green-50' },
-  rejected: { icon: XCircle, label: 'Refusee', className: 'text-red-600 bg-red-50' },
+  in_review: { icon: Loader, label: 'En cours d\'étude', className: 'text-blue-600 bg-blue-50' },
+  approved: { icon: CheckCircle, label: 'Acceptée', className: 'text-green-600 bg-green-50' },
+  rejected: { icon: XCircle, label: 'Refusée', className: 'text-red-600 bg-red-50' },
 };
 
 export function RequestsList() {
@@ -20,7 +20,7 @@ export function RequestsList() {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-xl font-bold text-gray-900">Mes Demandes</h2>
-          <p className="text-sm text-gray-500">{totalRequests} demande{totalRequests > 1 ? 's' : ''} de credit</p>
+          <p className="text-sm text-gray-500">{totalRequests} demande{totalRequests > 1 ? 's' : ''} de crédit</p>
         </div>
         <button
           onClick={() => navigateTo('new-credit')}
@@ -36,7 +36,7 @@ export function RequestsList() {
           <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <CreditCard className="w-8 h-8 text-gray-400" />
           </div>
-          <p className="text-gray-500 mb-4">Aucune demande de credit en cours</p>
+          <p className="text-gray-500 mb-4">Aucune demande de crédit en cours</p>
           <button
             onClick={() => navigateTo('new-credit')}
             className="px-6 py-3 bg-orange-500 text-white rounded-xl hover:bg-orange-600 transition-colors font-medium"
@@ -75,11 +75,11 @@ export function RequestsList() {
                     <p className="font-semibold text-gray-900">{formatCurrency(request.amount)}</p>
                   </div>
                   <div>
-                    <p className="text-xs text-gray-500">Duree</p>
+                    <p className="text-xs text-gray-500">Durée</p>
                     <p className="font-semibold text-gray-900">{request.durationMonths} mois</p>
                   </div>
                   <div>
-                    <p className="text-xs text-gray-500">Mensualite</p>
+                    <p className="text-xs text-gray-500">Mensualité</p>
                     <p className="font-semibold text-orange-600">{formatCurrency(request.calculatedMonthlyPayment)}</p>
                   </div>
                   <div>
@@ -99,7 +99,7 @@ export function RequestsList() {
                     'text-red-700'
                   }`}>
                     Taux d'endettement: {request.calculatedDebtRatio.toFixed(1)}% |
-                    Reste a vivre: {formatCurrency(request.calculatedRemainingIncome)}
+                    Reste à vivre : {formatCurrency(request.calculatedRemainingIncome)}
                   </p>
                 </div>
 

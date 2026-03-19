@@ -85,7 +85,7 @@ export function Accueil() {
           <div className="flex items-start gap-3 p-4 bg-slate-50 rounded-lg">
             <Shield className="w-6 h-6 text-slate-500 mt-0.5" aria-hidden="true" />
             <div className="flex-1">
-              <p className="text-sm font-medium text-slate-700 mb-1">Role</p>
+              <p className="text-sm font-medium text-slate-700 mb-1">Rôle</p>
               <p className="text-base font-medium text-slate-900">{roleLabel}</p>
             </div>
           </div>
@@ -102,12 +102,12 @@ export function Accueil() {
 
       <button
         onClick={handleLogout}
-        aria-label="Se deconnecter de l'espace client"
+        aria-label="Se déconnecter de l'espace client"
         className="w-full bg-slate-800 hover:bg-slate-700 text-white rounded-xl flex items-center justify-center gap-3 transition-colors"
         style={{ height: '52px' }}
       >
         <LogOut className="w-5 h-5" aria-hidden="true" />
-        <span className="font-semibold text-base">Se deconnecter</span>
+        <span className="font-semibold text-base">Se déconnecter</span>
       </button>
     </div>
   );
