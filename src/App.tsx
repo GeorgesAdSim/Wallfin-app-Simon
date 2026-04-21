@@ -68,54 +68,65 @@ function AppContent() {
 function App() {
   useEffect(() => {
     const initializeApp = async () => {
-      const isNative = Capacitor.isNativePlatform();
-
-      if (isNative) {
-        try {
-          await StatusBar.setStyle({ style: Style.Light });
-          await StatusBar.setBackgroundColor({ color: '#f97316' });
-        } catch (error) {
-          console.warn('StatusBar not available:', error);
-        }
-
-        try {
-          await SplashScreen.hide();
-        } catch (error) {
-          console.warn('SplashScreen not available:', error);
-        }
-
-        try {
-          await Keyboard.setAccessoryBarVisible({ isVisible: true });
-        } catch (error) {
-          console.warn('Keyboard not available:', error);
-        }
-
-        CapacitorApp.addListener('appStateChange', ({ isActive }) => {
-          console.log('App state changed. Is active:', isActive);
-        });
-
-        CapacitorApp.addListener('backButton', ({ canGoBack }) => {
-          if (!canGoBack) {
-            CapacitorApp.exitApp();
-          } else {
-            window.history.back();
-          }
-        });
-      }
-
       try {
-        await notificationService.initialize();
-        console.log('Notification service initialized');
+        const isNative = Capacitor.isNativePlatform();
+
+        if (isNative) {
+          try {
+            await StatusBar.setStyle({ style: Style.Light });
+            await StatusBar.setBackgroundColor({ color: '#f97316' });
+          } catch (error) {
+            console.warn('StatusBar not available:', error);
+          }
+
+          try {
+            await SplashScreen.hide();
+          } catch (error) {
+            console.warn('SplashScreen not available:', error);
+          }
+
+          try {
+            await Keyboard.setAccessoryBarVisible({ isVisible: true });
+          } catch (error) {
+            console.warn('Keyboard not available:', error);
+          }
+
+          try {
+            CapacitorApp.addListener('appStateChange', ({ isActive }) => {
+              console.log('App state changed. Is active:', isActive);
+            });
+
+            CapacitorApp.addListener('backButton', ({ canGoBack }) => {
+              if (!canGoBack) {
+                CapacitorApp.exitApp();
+              } else {
+                window.history.back();
+              }
+            });
+          } catch (error) {
+            console.warn('App listeners not available:', error);
+          }
+        }
+
+        try {
+          await notificationService.initialize();
+        } catch (error) {
+          console.warn('Notification service unavailable:', error);
+        }
       } catch (error) {
-        console.error('Error initializing notifications:', error);
+        console.warn('App initialization error:', error);
       }
     };
 
     initializeApp();
 
     return () => {
-      if (Capacitor.isNativePlatform()) {
-        CapacitorApp.removeAllListeners();
+      try {
+        if (Capacitor.isNativePlatform()) {
+          CapacitorApp.removeAllListeners();
+        }
+      } catch {
+        // cleanup best-effort
       }
     };
   }, []);

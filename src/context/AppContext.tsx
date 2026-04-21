@@ -108,8 +108,13 @@ export function AppProvider({ children }: { children: ReactNode }) {
       if (!profileError && profile) {
         setUserRole(profile.role);
 
-        const { data: { user } } = await supabase.auth.getUser();
-        const createdAt = user?.created_at || new Date().toISOString();
+        let createdAt = new Date().toISOString();
+        try {
+          const { data: { user } } = await supabase.auth.getUser();
+          if (user?.created_at) createdAt = user.created_at;
+        } catch {
+          // use default createdAt
+        }
 
         setClient({
           id: profile.id,
@@ -119,19 +124,23 @@ export function AppProvider({ children }: { children: ReactNode }) {
           avatar_url: profile.avatar_url,
           created_at: createdAt,
         });
+
+        setIsAuthenticatedState(true);
+        setCurrentView('credits');
+        fetchCredits(userId);
+        fetchMessages(userId);
       } else {
         setClient(null);
         setUserRole(null);
+        setIsAuthenticatedState(false);
+        setCurrentView('login');
       }
     } catch {
       setClient(null);
       setUserRole(null);
+      setIsAuthenticatedState(false);
+      setCurrentView('login');
     }
-
-    setIsAuthenticatedState(true);
-    setCurrentView('credits');
-    fetchCredits(userId);
-    fetchMessages(userId);
   }, [fetchCredits, fetchMessages]);
 
   const handleSignOut = useCallback(() => {
@@ -192,22 +201,39 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
+    let loadingResolved = false;
+    const resolveLoading = () => {
+      if (!loadingResolved) {
+        loadingResolved = true;
+        setIsLoading(false);
+      }
+    };
+
+    const loadingTimeout = setTimeout(resolveLoading, 8000);
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if ((event === 'SIGNED_IN' || event === 'INITIAL_SESSION') && session?.user) {
         const userId = session.user.id;
         (async () => {
-          await handleSignInRef.current(userId);
-          setIsLoading(false);
+          try {
+            await handleSignInRef.current(userId);
+          } catch (err) {
+            console.error('Error during sign-in:', err);
+            handleSignOutRef.current();
+          } finally {
+            resolveLoading();
+          }
         })();
       } else if (event === 'SIGNED_OUT') {
         handleSignOutRef.current();
-        setIsLoading(false);
+        resolveLoading();
       } else if (event === 'INITIAL_SESSION' && !session) {
-        setIsLoading(false);
+        resolveLoading();
       }
     });
 
     return () => {
+      clearTimeout(loadingTimeout);
       subscription.unsubscribe();
     };
   }, []);
