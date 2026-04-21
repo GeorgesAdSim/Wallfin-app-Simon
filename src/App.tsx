@@ -16,6 +16,7 @@ import { SimpleCreditDetail } from './components/Credits/SimpleCreditDetail';
 import { GlobalReport } from './components/Reports/GlobalReport';
 import { AppLayout } from './components/Layout/AppLayout';
 import { InstallBanner } from './components/PWA/InstallBanner';
+import { DeleteAccount } from './components/Account/DeleteAccount';
 import { notificationService } from './services/NotificationService';
 
 function AppContent() {
@@ -118,6 +119,10 @@ function App() {
       }
     };
   }, []);
+
+  if (window.location.pathname === '/delete-account') {
+    return <DeleteAccount />;
+  }
 
   return (
     <AppProvider>
