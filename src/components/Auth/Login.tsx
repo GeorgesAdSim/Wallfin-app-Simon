@@ -1,12 +1,17 @@
 import { useState } from 'react';
-import { Mail } from 'lucide-react';
+import { Mail, Lock } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
+
+const REVIEW_EMAIL = 'googleplay.review@wallfin.be';
 
 export function Login() {
   const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+
+  const isReviewAccount = email.trim().toLowerCase() === REVIEW_EMAIL;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -15,21 +20,35 @@ export function Login() {
     setSuccess(false);
 
     try {
-      const { error: magicLinkError } = await supabase.auth.signInWithOtp({
-        email,
-        options: {
-          emailRedirectTo: window.location.origin,
-        },
-      });
+      if (isReviewAccount) {
+        const { error: signInError } = await supabase.auth.signInWithPassword({
+          email: email.trim(),
+          password,
+        });
 
-      if (magicLinkError) {
-        console.error('Error sending magic link:', magicLinkError);
-        setError('Erreur lors de l\'envoi du lien de connexion. Veuillez réessayer.');
-        setIsLoading(false);
-        return;
+        if (signInError) {
+          console.error('Error signing in with password:', signInError);
+          setError('Email ou mot de passe incorrect.');
+          setIsLoading(false);
+          return;
+        }
+      } else {
+        const { error: magicLinkError } = await supabase.auth.signInWithOtp({
+          email,
+          options: {
+            emailRedirectTo: window.location.origin,
+          },
+        });
+
+        if (magicLinkError) {
+          console.error('Error sending magic link:', magicLinkError);
+          setError('Erreur lors de l\'envoi du lien de connexion. Veuillez réessayer.');
+          setIsLoading(false);
+          return;
+        }
+
+        setSuccess(true);
       }
-
-      setSuccess(true);
     } catch (err) {
       console.error('Login exception:', err);
       setError('Une erreur est survenue lors de la connexion');
@@ -82,7 +101,13 @@ export function Login() {
                   <input
                     type="email"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      setError('');
+                      if (e.target.value.trim().toLowerCase() !== REVIEW_EMAIL) {
+                        setPassword('');
+                      }
+                    }}
                     className="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#F57C00] focus:border-transparent"
                     placeholder="votre@email.be"
                     required
@@ -90,12 +115,29 @@ export function Login() {
                 </div>
               </div>
 
+              {isReviewAccount && (
+                <div>
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#999]" />
+                    <input
+                      type="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#F57C00] focus:border-transparent"
+                      placeholder="Mot de passe"
+                      required
+                      autoFocus
+                    />
+                  </div>
+                </div>
+              )}
+
               <button
                 type="submit"
-                disabled={isLoading}
+                disabled={isLoading || (isReviewAccount && !password)}
                 className="w-full bg-[#F57C00] hover:bg-[#E67100] text-white font-medium py-3 rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {isLoading ? 'Envoi en cours...' : 'Se connecter'}
+                {isLoading ? 'Connexion en cours...' : 'Se connecter'}
               </button>
             </form>
           )}
