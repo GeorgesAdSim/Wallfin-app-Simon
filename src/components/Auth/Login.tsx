@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Mail, Lock } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 
-const REVIEW_EMAIL = 'googleplay.review@wallfin.be';
+const DEMO_EMAIL = 'googleplay.review@wallfin.be';
 
 export function Login() {
   const [email, setEmail] = useState('');
@@ -10,8 +10,7 @@ export function Login() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
-
-  const isReviewAccount = email.trim().toLowerCase() === REVIEW_EMAIL;
+  const [needsPassword, setNeedsPassword] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -19,29 +18,38 @@ export function Login() {
     setError('');
     setSuccess(false);
 
+    const trimmedEmail = email.trim().toLowerCase();
+
     try {
-      if (isReviewAccount) {
-        const { error: signInError } = await supabase.auth.signInWithPassword({
-          email: email.trim(),
+      if (trimmedEmail === DEMO_EMAIL) {
+        if (!needsPassword) {
+          setNeedsPassword(true);
+          setIsLoading(false);
+          return;
+        }
+
+        const { error: authError } = await supabase.auth.signInWithPassword({
+          email: trimmedEmail,
           password,
         });
 
-        if (signInError) {
-          console.error('Error signing in with password:', signInError);
+        if (authError) {
           setError('Email ou mot de passe incorrect.');
           setIsLoading(false);
           return;
         }
       } else {
-        const { error: magicLinkError } = await supabase.auth.signInWithOtp({
+        setNeedsPassword(false);
+        setPassword('');
+
+        const { error: otpError } = await supabase.auth.signInWithOtp({
           email,
           options: {
             emailRedirectTo: window.location.origin,
           },
         });
 
-        if (magicLinkError) {
-          console.error('Error sending magic link:', magicLinkError);
+        if (otpError) {
           setError('Erreur lors de l\'envoi du lien de connexion. Veuillez réessayer.');
           setIsLoading(false);
           return;
@@ -49,8 +57,7 @@ export function Login() {
 
         setSuccess(true);
       }
-    } catch (err) {
-      console.error('Login exception:', err);
+    } catch {
       setError('Une erreur est survenue lors de la connexion');
     } finally {
       setIsLoading(false);
@@ -104,7 +111,8 @@ export function Login() {
                     onChange={(e) => {
                       setEmail(e.target.value);
                       setError('');
-                      if (e.target.value.trim().toLowerCase() !== REVIEW_EMAIL) {
+                      if (e.target.value.trim().toLowerCase() !== DEMO_EMAIL) {
+                        setNeedsPassword(false);
                         setPassword('');
                       }
                     }}
@@ -115,26 +123,31 @@ export function Login() {
                 </div>
               </div>
 
-              {isReviewAccount && (
-                <div>
-                  <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#999]" />
-                    <input
-                      type="password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      className="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#F57C00] focus:border-transparent"
-                      placeholder="Mot de passe"
-                      required
-                      autoFocus
-                    />
+              {needsPassword && (
+                <>
+                  <p className="text-xs text-[#666] text-center">
+                    Compte démo — entrez le mot de passe fourni
+                  </p>
+                  <div>
+                    <div className="relative">
+                      <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#999]" />
+                      <input
+                        type="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        className="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#F57C00] focus:border-transparent"
+                        placeholder="Mot de passe"
+                        required
+                        autoFocus
+                      />
+                    </div>
                   </div>
-                </div>
+                </>
               )}
 
               <button
                 type="submit"
-                disabled={isLoading || (isReviewAccount && !password)}
+                disabled={isLoading || (needsPassword && !password)}
                 className="w-full bg-[#F57C00] hover:bg-[#E67100] text-white font-medium py-3 rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isLoading ? 'Connexion en cours...' : 'Se connecter'}
