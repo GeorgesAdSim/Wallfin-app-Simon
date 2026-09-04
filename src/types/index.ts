@@ -1,4 +1,4 @@
-export type ViewType = 'login' | 'register' | 'accueil' | 'credits' | 'messages' | 'message-detail' | 'demandes' | 'credit-detail' | 'global-report';
+export type ViewType = 'login' | 'register' | 'reset-password' | 'accueil' | 'credits' | 'messages' | 'message-detail' | 'demandes' | 'credit-detail' | 'global-report';
 
 export type MessageType = 'paiement' | 'info' | 'rappel';
 
@@ -11,7 +11,7 @@ export interface Message {
   type: MessageType;
 }
 
-export type CreditType = 'Crédit Auto' | 'Prêt Travaux' | 'Crédit Énergie' | 'Prêt Personnel' | 'Prêt Vacances' | 'Crédit Personnel' | 'Regroupement de Crédit';
+export type CreditType = 'Crédit Auto' | 'Prêt Travaux' | 'Crédit Énergie' | 'Prêt Personnel' | 'Prêt Vacances';
 
 export type CreditStatus = 'en_cours' | 'en_attente' | 'solde';
 

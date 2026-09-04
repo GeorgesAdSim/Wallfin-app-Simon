@@ -1,12 +1,15 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Capacitor } from '@capacitor/core';
 import { SplashScreen } from '@capacitor/splash-screen';
 import { StatusBar, Style } from '@capacitor/status-bar';
 import { App as CapacitorApp } from '@capacitor/app';
 import { Keyboard } from '@capacitor/keyboard';
 import { AppProvider, useApp } from './context/AppContext';
+import { supabase } from './lib/supabase';
 import { Login } from './components/Auth/Login';
 import { Register } from './components/Auth/Register';
+import { ResetPassword } from './components/Auth/ResetPassword';
+import { MfaChallenge } from './components/Auth/MfaChallenge';
 import { Accueil } from './components/Home/Accueil';
 import { Credits } from './components/Dashboard/Credits';
 import { Messages } from './components/Messages/Messages';
@@ -19,7 +22,25 @@ import { InstallBanner } from './components/PWA/InstallBanner';
 import { notificationService } from './services/NotificationService';
 
 function AppContent() {
-  const { currentView, isAuthenticated } = useApp();
+  const { currentView, isAuthenticated, mfaChallengeRequired } = useApp();
+  const [mustResetPassword, setMustResetPassword] = useState(
+    () => sessionStorage.getItem('wallfin_must_reset_password') === '1'
+  );
+
+  if (mfaChallengeRequired) {
+    return <MfaChallenge />;
+  }
+
+  if (isAuthenticated && mustResetPassword) {
+    return (
+      <ResetPassword
+        onDone={() => {
+          sessionStorage.removeItem('wallfin_must_reset_password');
+          setMustResetPassword(false);
+        }}
+      />
+    );
+  }
 
   if (!isAuthenticated) {
     return currentView === 'register' ? <Register /> : <Login />;
@@ -90,6 +111,27 @@ function App() {
             CapacitorApp.exitApp();
           } else {
             window.history.back();
+          }
+        });
+
+        CapacitorApp.addListener('appUrlOpen', async ({ url }) => {
+          if (url.includes('login-callback') || url.includes('reset-callback')) {
+            const hashPart = url.split('#')[1];
+            if (hashPart) {
+              const params = new URLSearchParams(hashPart);
+              const accessToken = params.get('access_token');
+              const refreshToken = params.get('refresh_token');
+              const type = params.get('type');
+              if (type === 'recovery') {
+                sessionStorage.setItem('wallfin_must_reset_password', '1');
+              }
+              if (accessToken && refreshToken) {
+                await supabase.auth.setSession({
+                  access_token: accessToken,
+                  refresh_token: refreshToken,
+                });
+              }
+            }
           }
         });
       }

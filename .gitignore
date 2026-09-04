@@ -21,3 +21,33 @@ dist-ssr
 *.sln
 *.sw?
 .env
+
+# Secrets - never commit
+*.keystore
+*.p8
+*.p12
+*.cer
+*.mobileprovision
+
+# Local scratch / build tooling (not part of app source)
+WallfIn.xcarchive/
+export/
+__pycache__/
+venv/
+asc_api.py
+migration_wallfin_hub.sql
+resize_appstore.py
+resize_ipad.py
+appstore_screenshots/
+appstore_screenshots_ipad/
+ExportOptions.plist
+
+# Android/iOS build artifacts
+android/.gradle/
+android/build/
+android/app/build/
+android/capacitor-cordova-android-plugins/build/
+android/local.properties
+ios/App/App.xcodeproj/project.xcworkspace/
+ios/App/App.xcodeproj/xcuserdata/
+ios/App/CapApp-SPM/.swiftpm/

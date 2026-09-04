@@ -1,6 +1,8 @@
 import { useApp } from '../../context/AppContext';
+import { supabase } from '../../lib/supabase';
 import { Mail, Phone, MapPin, LogOut, Edit, Check, X } from 'lucide-react';
 import { useState, useEffect, useId } from 'react';
+import { MfaSettings } from './MfaSettings';
 
 export function Accueil() {
   const { client, setAuthenticated, updateClient } = useApp();
@@ -24,7 +26,8 @@ export function Accueil() {
 
   if (!client) return null;
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
     setAuthenticated(false);
   };
 
@@ -43,16 +46,18 @@ export function Accueil() {
     setIsEditing(false);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     const updates = {
       email: editedEmail,
       phone: editedPhone,
       address: editedAddress,
     };
 
-    updateClient(updates);
-    localStorage.setItem('client', JSON.stringify({ ...client, ...updates }));
+    await supabase.auth.updateUser({
+      data: { phone: editedPhone, address: editedAddress },
+    });
 
+    updateClient(updates);
     setIsEditing(false);
     setShowToast(true);
     setTimeout(() => setShowToast(false), 3000);
@@ -206,6 +211,8 @@ export function Accueil() {
           </button>
         )}
       </section>
+
+      <MfaSettings />
 
       <button
         onClick={handleLogout}
